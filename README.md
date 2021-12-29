@@ -1,3 +1,1 @@
-# pro-fontawesome
-<hr>
-<h1>SOON!</h1>
+# pro-fontawesome <h1>SOON!</h1>
