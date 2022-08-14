@@ -1,0 +1,29 @@
+@import url("https://fontbit.io/css2?family=Catamaran:wght@400;700&family=Fira+Code:wght@400;700&display=swap");
+* {
+  font-family: "Catamaran";
+  margin: 0;
+  padding: 0;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+pre {
+  -webkit-user-select: text;
+     -moz-user-select: text;
+      -ms-user-select: text;
+          user-select: text;
+  overflow: auto;
+}
+pre code {
+  font-family: "Fira Code";
+  -webkit-user-select: text;
+     -moz-user-select: text;
+      -ms-user-select: text;
+          user-select: text;
+  font-style: italic;
+  font-size: 14px;
+}/*# sourceMappingURL=default.css.map */
