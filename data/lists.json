@@ -1,5 +1,13 @@
 {
     "terbaru": {
+        "kode_versi": "v6.2.0",
+        "versi": "6.2.0",
+        "licence": "pro",
+        "tag_stylesheet": "<link rel=\"stylesheet\" href=\"https://cdn.statically.io/gh/devanka761/font-awesome-pro/v6.2.0/dSc2aRRmYE.css\">",
+        "tag_script": "<script src=\"https://cdn.statically.io/gh/devanka761/font-awesome-pro/v6.2.0/dSc2aRRmYE.js\"></script>",
+        "import_stylesheet": "@import url('https://cdn.statically.io/gh/devanka761/font-awesome-pro/v6.2.0/dSc2aRRmYE.css');"
+    },
+    "v6.1.2": {
         "kode_versi": "v6.1.2",
         "versi": "6.1.2",
         "licence": "pro",
