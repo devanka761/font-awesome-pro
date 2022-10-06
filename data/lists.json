@@ -3,40 +3,40 @@
         "kode_versi": "v6.2.0",
         "versi": "6.2.0",
         "licence": "pro",
-        "tag_stylesheet": "<link rel=\"stylesheet\" href=\"https://cdn.statically.io/gh/devanka761/font-awesome-pro/v6.2.0/dSc2aRRmYE.css\">",
-        "tag_script": "<script src=\"https://cdn.statically.io/gh/devanka761/font-awesome-pro/v6.2.0/dSc2aRRmYE.js\"></script>",
-        "import_stylesheet": "@import url('https://cdn.statically.io/gh/devanka761/font-awesome-pro/v6.2.0/dSc2aRRmYE.css');"
+        "tag_stylesheet": "<link rel=\"stylesheet\" href=\"https://cdn.devanka761.my.id/fontawesome-pro/6.2.0/dSc2aRRmYE.css\">",
+        "tag_script": "<script src=\"https://cdn.devanka761.my.id/fontawesome-pro/6.2.0/dSc2aRRmYE.js\"></script>",
+        "import_stylesheet": "@import url('https://cdn.devanka761.my.id/fontawesome-pro/6.2.0/dSc2aRRmYE.css');"
     },
     "v6.1.2": {
         "kode_versi": "v6.1.2",
         "versi": "6.1.2",
         "licence": "pro",
-        "tag_stylesheet": "<link rel=\"stylesheet\" href=\"https://cdn.statically.io/gh/devanka761/font-awesome-pro/v6.1.2/x5anzk5VjZ.css\">",
-        "tag_script": "<script src=\"https://cdn.statically.io/gh/devanka761/font-awesome-pro/v6.1.2/x5anzk5VjZ.js\"></script>",
-        "import_stylesheet": "@import url('https://cdn.statically.io/gh/devanka761/font-awesome-pro/v6.1.2/x5anzk5VjZ.css');"
+        "tag_stylesheet": "<link rel=\"stylesheet\" href=\"https://cdn.devanka761.my.id/fontawesome-pro/6.1.2/x5anzk5VjZ.css\">",
+        "tag_script": "<script src=\"https://cdn.devanka761.my.id/fontawesome-pro/6.1.2/x5anzk5VjZ.js\"></script>",
+        "import_stylesheet": "@import url('https://cdn.devanka761.my.id/fontawesome-pro/6.1.2/x5anzk5VjZ.css');"
     },
     "v6.1.1": {
         "kode_versi": "v6.1.1",
         "versi": "6.1.1",
         "licence": "pro",
-        "tag_stylesheet": "<link rel=\"stylesheet\" href=\"https://cdn.statically.io/gh/devanka761/font-awesome-pro/v6.1.1/Huivp5j3Pv.css\">",
-        "tag_script": "<script src=\"https://cdn.statically.io/gh/devanka761/font-awesome-pro/v6.1.1/Huivp5j3Pv.js\"></script>",
-        "import_stylesheet": "@import url('https://cdn.statically.io/gh/devanka761/font-awesome-pro/v6.1.1/Huivp5j3Pv.css');"
+        "tag_stylesheet": "<link rel=\"stylesheet\" href=\"https://cdn.devanka761.my.id/fontawesome-pro/6.1.1/Huivp5j3Pv.css\">",
+        "tag_script": "<script src=\"https://cdn.devanka761.my.id/fontawesome-pro/6.1.1/Huivp5j3Pv.js\"></script>",
+        "import_stylesheet": "@import url('https://cdn.devanka761.my.id/fontawesome-pro/6.1.1/Huivp5j3Pv.css');"
     },
     "v6.0.0-beta3": {
         "kode_versi": "v6.0.0-beta3",
         "versi": "6.0.0-beta3",
         "licence": "pro",
-        "tag_stylesheet": "<link rel=\"stylesheet\" href=\"https://cdn.statically.io/gh/devanka761/font-awesome-pro/v6.0.0-beta3/9wivkuWSV7.css\">",
-        "tag_script": "<script src=\"https://cdn.statically.io/gh/devanka761/font-awesome-pro/v6.0.0-beta3/9wivkuWSV7.js\"></script>",
-        "import_stylesheet": "@import url('https://cdn.statically.io/gh/devanka761/font-awesome-pro/v6.0.0-beta3/9wivkuWSV7.css');"
+        "tag_stylesheet": "<link rel=\"stylesheet\" href=\"https://cdn.devanka761.my.id/fontawesome-pro/6.0.0-beta3/9wivkuWSV7.css\">",
+        "tag_script": "<script src=\"https://cdn.devanka761.my.id/fontawesome-pro/6.0.0-beta3/9wivkuWSV7.js\"></script>",
+        "import_stylesheet": "@import url('https://cdn.devanka761.my.id/fontawesome-pro/6.0.0-beta3/9wivkuWSV7.css');"
     },
     "v5.15.4": {
         "kode_versi": "v5.15.4",
         "versi": "5.15.4",
         "licence": "pro",
-        "tag_stylesheet": "<link rel=\"stylesheet\" href=\"https://cdn.statically.io/gh/devanka761/font-awesome-pro/v5.15.4/wUUx7p9G4N.css\">",
-        "tag_script": "<script src=\"https://cdn.statically.io/gh/devanka761/font-awesome-pro/v5.15.4/wUUx7p9G4N.js\"></script>",
-        "import_stylesheet": "@import url('https://cdn.statically.io/gh/devanka761/font-awesome-pro/v5.15.4/wUUx7p9G4N.css');"
+        "tag_stylesheet": "<link rel=\"stylesheet\" href=\"https://cdn.devanka761.my.id/fontawesome-pro/5.15.4/wUUx7p9G4N.css\">",
+        "tag_script": "<script src=\"https://cdn.devanka761.my.id/fontawesome-pro/5.15.4/wUUx7p9G4N.js\"></script>",
+        "import_stylesheet": "@import url('https://cdn.devanka761.my.id/fontawesome-pro/5.15.4/wUUx7p9G4N.css');"
     }
 }
