@@ -6,7 +6,8 @@ npm install --save-exact webfont-awesome-pro
 
 Use the Latest [**Font Awesome Pro Plus**](https://fontawesome.com/) for Free. Get all stylesheets and webfonts into your project easily!
 
-- Package Version: 1.2.6
+- Package Version: 1.2.7 (older version [ex: 1.2.6] will not work because font awesome anti bot)
+- [NEW] Bypass Version: 1.0
 - Font Awesome Pro Plus Version: 7.2.0
 
 ## NOTICE

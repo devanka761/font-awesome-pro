@@ -4,3 +4,4 @@ dist
 ex
 package-lock.json
 temp
+.vscode
