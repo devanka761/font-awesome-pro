@@ -1,19 +1,13 @@
 {
   "compilerOptions": {
-    "target": "es2020",
+    "target": "es2016",
     "types": [
       "node"
     ],
-    "module": "esnext",
+    "module": "node16",
     "declaration": true,
     "declarationDir": "dist/types",
-    "moduleResolution": "node",
-    "baseUrl": ".",
-    "paths": {
-      "*": [
-        "node_modules/*"
-      ]
-    },
+    "moduleResolution": "node16",
     "typeRoots": [
       "src/types",
       "node_modules/@types"
@@ -21,6 +15,7 @@
     "resolveJsonModule": true,
     "sourceMap": true,
     "outDir": "dist",
+    "rootDir": "./src",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
@@ -34,6 +29,5 @@
   "exclude": [
     "./node_modules/*",
     "./dist/**/*",
-    "./src/create/*"
   ]
 }

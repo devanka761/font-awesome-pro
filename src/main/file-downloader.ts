@@ -48,7 +48,7 @@ export async function downloadFile(fileurl: string, filedir: string, progress: s
     console.log(`🚀 ${progress ? progress + " " : ""}${filename}`)
     filesDownloaded.push(filename)
   } catch (_error) {
-    throw new Error("The version you wanted to download is not available. Please use other release version.")
+    console.error("The version you wanted to download is not available. Please use other release version.")
   }
 }
 export function getDownloaded(): string[] {
