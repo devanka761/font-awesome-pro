@@ -3,7 +3,7 @@ import defVer from "../json/fonts.json"
 import waittime from "../helper/waittime"
 
 async function getVersion(): Promise<Ver> {
-  const url = `https://raw.githubusercontent.com/devanka761/webfont-awesome-pro/refs/heads/master/src/json/fonts.json?ts=${Date.now().toString(36)}`
+  const url = `https://raw.githubusercontent.com/devanka761/font-awesome-pro/refs/heads/master/src/json/fonts.json?ts=${Date.now().toString(36)}`
 
   return await fetch(url, {
     method: "GET"

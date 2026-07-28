@@ -1,17 +1,17 @@
 {
-  "name": "webfont-awesome-pro",
-  "version": "1.2.8",
-  "description": "(Webfont) Font Awesome Pro Downloader",
+  "name": "font-awesome-pro",
+  "version": "1.2.9",
+  "description": "Font Awesome Pro v7.3.1",
   "author": "Devanka761 <contact@devanka.id> (https://devanka.id/)",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/devanka761/webfont-awesome-pro.git"
+    "url": "git+https://github.com/devanka761/font-awesome-pro.git"
   },
   "bugs": {
-    "url": "https://github.com/devanka761/webfont-awesome-pro/issues"
+    "url": "https://github.com/devanka761/font-awesome-pro/issues"
   },
-  "homepage": "https://github.com/devanka761/webfont-awesome-pro#readme",
+  "homepage": "https://github.com/devanka761/font-awesome-pro#readme",
   "keywords": [
     "font-awesome-pro",
     "fontawesomepro",
@@ -75,10 +75,10 @@
     "version:patch": "npm --no-git-tag-version version patch",
     "version:minor": "npm --no-git-tag-version version minor",
     "version:major": "npm --no-git-tag-version version major",
-    "getfont": "npx webfapro"
+    "getfont": "npx fapro"
   },
   "bin": {
-    "webfapro": "./dist/webfapro.js"
+    "fapro": "./dist/webfapro.js"
   },
   "dependencies": {
     "nodejs-file-downloader": "^4.13.0",
