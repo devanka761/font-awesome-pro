@@ -1,7 +1,7 @@
 import fs from "fs"
 import waittime from "../helper/waittime"
 
-const pName = "webfont-awesome-pro"
+const pName = "font-awesome-pro"
 const cssFolder = `${pName}/css`
 
 function manageAllCss(useDir: string, cssUrls: string[]): void {
