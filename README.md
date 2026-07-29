@@ -4,16 +4,16 @@
 npm install --save-exact font-awesome-pro
 ```
 
-Use the Latest [**Font Awesome Pro+ Plus**](https://fontawesome.com/) for Free. Get all stylesheets and webfonts into your project easily!
+Use the Latest [**Font Awesome Pro+**](https://fontawesome.com/) for Free. Get all stylesheets and webfonts into your project easily!
 
-- Package Version: 1.2.9 (versions older than 1.2.7 will not work due to the latest anti-bot measures.)
+- Package Version: 7.3.0 (versions older than 7.2.0 will not work due to the latest anti-bot measures)
 - [NEW] Bypass Version: 1.0
-- Font Awesome Pro+ Plus Version: 7.3.1
+- Font Awesome Pro+ Version: 7.3.1
 
 ## NOTICE
-**Font Awesome Pro+ Plus** was made for educational purposes only!
+**Font Awesome Pro+** was made for educational purposes only!
 
-This package provides **Paid (Pro+ Plus) Version** for the latest official package. It is intended for experimental and **personal use** only. It is **licensed for commercial** use.
+This package provides **Paid (Pro+) Version** for the latest official package. It is intended for experimental and **personal use** only. It is **licensed for commercial** use.
 
 **DO NOT** use this package if you are not the *Creators* or you have not buy the official product from the official website.
 

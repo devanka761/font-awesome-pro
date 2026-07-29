@@ -25,10 +25,10 @@ jobs:
           registry-url: "https://registry.npmjs.org"
 
       - name: Remove old dependencies
-        run: rm -rf node_modules package-lock.json
+        run: rm -rf node_modules
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       - name: Check the version
         id: check
@@ -52,10 +52,10 @@ jobs:
 
       - name: Build
         run: npm run build
-        if: steps.check.outputs.version_changed == 'true'
+        # if: steps.check.outputs.version_changed == 'true'
 
       - name: Publish
-        if: steps.check.outputs.version_changed == 'true'
+        # if: steps.check.outputs.version_changed == 'true'
         run: npm publish --access public --no-git-checks
 
       - name: Tag release
@@ -65,3 +65,20 @@ jobs:
           git config --local user.name "github-actions[bot]"
           git tag -a "v${{ steps.check.outputs.new_version }}" -m "v${{ steps.check.outputs.new_version }}"
           git push origin "v${{ steps.check.outputs.new_version }}"
+
+      - name: Create Release & Upload Assets
+        if: steps.check.outputs.version_changed == 'true'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          ZIP_NAME="font-awesome-pro-v${{ steps.check.outputs.new_version }}.zip"
+
+          cd dist
+
+          zip -r "../$ZIP_NAME" fonts/ css/
+
+          cd ..
+
+          gh release create "v${{ steps.check.outputs.new_version }}" "$ZIP_NAME" \
+            --title "Release v${{ steps.check.outputs.new_version }}" \
+            --generate-notes
