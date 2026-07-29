@@ -1,18 +1,109 @@
 name: Publish Font-Awesome-Pro
 
 on:
-  push:
-    branches:
-      - master
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: 'Publish NPM Package'
+        type: boolean
+        required: true
+        default: false
+      tags:
+        description: 'Release Tag'
+        type: boolean
+        required: true
+        default: false
+      assets:
+        description: 'Create and Upload Assets'
+        type: boolean
+        required: true
+        default: false
 
 permissions:
   id-token: write
   contents: write
 
 jobs:
-  publish:
+  setup:
     runs-on: ubuntu-latest
+    outputs:
+      use_version: ${{ steps.check.outputs.use_version }}
+    steps:
+      - name: Only allow master
+        run: |
+          if [ "${{ github.ref_name }}" != "master" ]; then
+            echo "Workflow may only run from master."
+            exit 1
+          fi
 
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Check the version
+        id: check
+        run: |
+          CURRENT_VERSION=$(jq -r .version package.json)
+          LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
+          LATEST_VERSION=${LATEST_TAG#v}
+
+          if [ "$LATEST_VERSION" != "$CURRENT_VERSION" ]; then
+            echo "use_version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
+          else
+            echo "use_version=$LATEST_VERSION" >> $GITHUB_OUTPUT
+          fi
+
+
+  publish_npm:
+    needs: setup
+    if: inputs.publish == true
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: "24"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Publish
+        run: npm publish --provenance --access public --no-git-checks
+
+
+  tag_repo:
+    needs: setup
+    if: inputs.tags == true
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Tag release
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git tag -a "v${{ needs.setup.outputs.use_version }}" -m "v${{ needs.setup.outputs.use_version }}"
+          git push origin "v${{ needs.setup.outputs.use_version }}"
+
+
+  create_release:
+    needs: [setup, tag_repo]
+    if: |
+      always() && 
+      inputs.assets == true && 
+      needs.setup.result == 'success' && 
+      (needs.tag_repo.result == 'success' || needs.tag_repo.result == 'skipped')
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v6
         with:
@@ -22,63 +113,29 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: "24"
-          registry-url: "https://registry.npmjs.org"
-
-      - name: Remove old dependencies
-        run: rm -rf node_modules
 
       - name: Install dependencies
         run: npm ci
 
-      - name: Check the version
-        id: check
-        run: |
-          CURRENT_VERSION=$(jq -r .version package.json)
-          echo "Current version: $CURRENT_VERSION"
-          LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
-          echo "Latest tag: $LATEST_TAG"
-
-          LATEST_VERSION=${LATEST_TAG#v}
-
-          if [ "$LATEST_VERSION" != "$CURRENT_VERSION" ]; 
-          then
-            echo "Version changed"
-            echo "version_changed=true" >> $GITHUB_OUTPUT
-            echo "new_version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
-          else
-            echo "Version not changed"
-            echo "version_changed=false" >> $GITHUB_OUTPUT
-          fi
-
       - name: Build
         run: npm run build
-        # if: steps.check.outputs.version_changed == 'true'
-
-      - name: Publish
-        # if: steps.check.outputs.version_changed == 'true'
-        run: npm publish --access public --no-git-checks
-
-      - name: Tag release
-        if: steps.check.outputs.version_changed == 'true'
-        run: |
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-          git tag -a "v${{ steps.check.outputs.new_version }}" -m "v${{ steps.check.outputs.new_version }}"
-          git push origin "v${{ steps.check.outputs.new_version }}"
 
       - name: Create Release & Upload Assets
-        if: steps.check.outputs.version_changed == 'true'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          ZIP_NAME="font-awesome-pro-v${{ steps.check.outputs.new_version }}.zip"
+          VERSION="${{ needs.setup.outputs.use_version }}"
+          ZIP_NAME="font-awesome-pro-v$VERSION.zip"
+          TAG_NAME="v$VERSION"
 
           cd dist
-
-          zip -r "../$ZIP_NAME" fonts/ css/
-
+          zip -r "../$ZIP_NAME" webfonts/ css/
           cd ..
 
-          gh release create "v${{ steps.check.outputs.new_version }}" "$ZIP_NAME" \
-            --title "Release v${{ steps.check.outputs.new_version }}" \
-            --generate-notes
+          if gh release view "$TAG_NAME" &>/dev/null; then
+            echo "Release $TAG_NAME already exists. Overwriting asset..."
+            gh release upload "$TAG_NAME" "$ZIP_NAME" --clobber
+          else
+            echo "Release $TAG_NAME does not exists. Creating new release..."
+            gh release create "$TAG_NAME" "$ZIP_NAME" \
+              --title "Release $TAG_NAME" \
+              --generate-notes
+          fi

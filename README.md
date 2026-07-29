@@ -1,7 +1,7 @@
 # Font Awesome Pro+ v7.3.1
 
 ```bash
-npm install --save-exact font-awesome-pro
+npm install --save-exact webfont-awesome-pro
 ```
 
 Use the Latest [**Font Awesome Pro+**](https://fontawesome.com/) for Free. Get all stylesheets and webfonts into your project easily!
@@ -24,7 +24,7 @@ To unlock commercial use for your own projects, and get an official product lice
 Install the package
 
 ```bash
-npm install --save-exact font-awesome-pro
+npm install --save-exact webfont-awesome-pro
 ```
 
 ## USAGE
@@ -57,11 +57,11 @@ You can use some bundlers such as webpack, parcel, etc.
 // import all font awesome pro+ styles
 
 // with .scss
-import "font-awesome-pro/scss/allstyles.scss";
+import "webfont-awesome-pro/scss/allstyles.scss";
 // with .css
-import "font-awesome-pro/css/allstyles.css";
+import "webfont-awesome-pro/css/allstyles.css";
 // or traditional import
-import("font-awesome-pro/scss/allstyles.scss")
+import("webfont-awesome-pro/scss/allstyles.scss")
 
 // your code
 document.body.innerHTML = `
@@ -78,19 +78,19 @@ document.body.innerHTML = `
 // make sure to always import
 // the 'fontawesome.scss' (or .css)
 // before other styles
-import "font-awesome-pro/scss/fontawesome.scss";
+import "webfont-awesome-pro/scss/fontawesome.scss";
 
 // then the primary styles
-import "font-awesome-pro/scss/solid.scss";
-import "font-awesome-pro/scss/regular.scss";
-import "font-awesome-pro/scss/duotone.scss";
-import "font-awesome-pro/scss/sharp-solid.scss";
-import "font-awesome-pro/scss/sharp-duotone-solid.scss";
+import "webfont-awesome-pro/scss/solid.scss";
+import "webfont-awesome-pro/scss/regular.scss";
+import "webfont-awesome-pro/scss/duotone.scss";
+import "webfont-awesome-pro/scss/sharp-solid.scss";
+import "webfont-awesome-pro/scss/sharp-duotone-solid.scss";
 
 // then the additional styles
-import "font-awesome-pro/scss/chisel-regular.scss";
-import "font-awesome-pro/scss/etch-solid.scss";
-import "font-awesome-pro/scss/notdog-solid.scss";
+import "webfont-awesome-pro/scss/chisel-regular.scss";
+import "webfont-awesome-pro/scss/etch-solid.scss";
+import "webfont-awesome-pro/scss/notdog-solid.scss";
 ```
 
 ### SCSS/CSS with bundler
@@ -100,11 +100,11 @@ import "font-awesome-pro/scss/notdog-solid.scss";
 // import all font awesome pro+ styles
 
 // import with scss (support: scss)
-@use "font-awesome-pro/scss/allstyles.scss";
+@use "webfont-awesome-pro/scss/allstyles.scss";
 // or traditional import (support: scss/css)
-@import "font-awesome-pro/scss/allstyles.scss";
+@import "webfont-awesome-pro/scss/allstyles.scss";
 // or even more traditional (support: scss/css)
-@import url("font-awesome-pro/scss/allstyles.scss");
+@import url("webfont-awesome-pro/scss/allstyles.scss");
 
 // same rule applies for specific styles like the javasript example above
 ```
@@ -137,7 +137,7 @@ npm run get-fapro
 
 ### JavaScript/TypeScript ES Modules - import
 ```javascript
-import { getFapro } from "font-awesome-pro";
+import { getFapro } from "webfont-awesome-pro";
 
 // start the downloader
 getFapro();
@@ -145,7 +145,7 @@ getFapro();
 
 ### JavaScript/TypeScript CommonJS - require
 ```javascript
-const { getFapro } = require("font-awesome-pro");
+const { getFapro } = require("webfont-awesome-pro");
 
 // start the downloader
 getFapro();
