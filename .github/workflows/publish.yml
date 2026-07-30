@@ -74,7 +74,7 @@ jobs:
         run: npm run build
 
       - name: Publish
-        run: npm publish --provenance --access public --no-git-checks
+        run: npm publish --provenance --access public --no-git-checks --tag latest
 
 
   tag_repo:
