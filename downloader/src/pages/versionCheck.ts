@@ -1,13 +1,25 @@
-import { Ver } from "../pages/fa.types"
-import defVer from "../json/fonts.json"
+import defVer, { Ver } from "../helper/fonts"
 import waittime from "../helper/waittime"
 
 async function getVersion(): Promise<Ver> {
-  console.log(`✅ Using Developments v${defVer.version}`)
-  return defVer
+  const url = `https://raw.githubusercontent.com/devanka761/font-awesome-pro/refs/heads/master/src/json/fonts.json?ts=${Date.now().toString(36)}`
+
+  return await fetch(url, {
+    method: "GET"
+  })
+    .then((res) => res.json())
+    .then((res) => {
+      console.log(`✅ Found: v${res.version}`)
+      return res
+    })
+    .catch(() => {
+      console.log(`⛔ Error getting the latest version!`)
+      console.log(`⛔ Forced Using v${defVer.version}`)
+      return defVer
+    })
 }
 
-export default async function devCheckVersion(): Promise<{ fontlist: string[]; useVer: string; baseUrl: string }> {
+export default async function checkVersion(): Promise<{ fontlist: string[]; useVer: string; baseUrl: string }> {
   console.log("--------")
   console.log("🕗 Checking Latest Version")
   await waittime(1000)

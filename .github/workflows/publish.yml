@@ -4,17 +4,22 @@ on:
   workflow_dispatch:
     inputs:
       publish:
-        description: 'Publish NPM Package'
+        description: "Publish NPM Package"
         type: boolean
         required: true
         default: false
       tags:
-        description: 'Release Tag'
+        description: "Release Tag"
         type: boolean
         required: true
         default: false
       assets:
-        description: 'Create and Upload Assets'
+        description: "Create and Upload Assets"
+        type: boolean
+        required: true
+        default: false
+      downloaders:
+        description: "Create and Upload Downloaders"
         type: boolean
         required: true
         default: false
@@ -36,7 +41,7 @@ jobs:
             exit 1
           fi
 
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
@@ -47,42 +52,84 @@ jobs:
           LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
           LATEST_VERSION=${LATEST_TAG#v}
 
+          echo "$LATEST_VERSION - $CURRENT_VERSION"
+
           if [ "$LATEST_VERSION" != "$CURRENT_VERSION" ]; then
             echo "use_version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
           else
             echo "use_version=$LATEST_VERSION" >> $GITHUB_OUTPUT
           fi
 
-
   publish_npm:
     needs: setup
     if: inputs.publish == true
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v4
         with:
           node-version: "24"
           registry-url: "https://registry.npmjs.org"
 
       - name: Install dependencies
+        working-directory: ./downloader
         run: npm ci
 
       - name: Build
-        run: npm run build
+        working-directory: ./downloader
+        run: npm run create
 
       - name: Publish
         run: npm publish --provenance --access public --no-git-checks --tag latest
 
+  create_downloaders:
+    needs: setup
+    if: inputs.downloaders == true
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+
+      - name: Setup Bun Runtime
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install Project Dependencies
+        working-directory: ./downloader
+        run: npm ci
+
+      - name: Compile for Linux (x64)
+        working-directory: ./downloader
+        run: bun build ./src/webfapro.ts --compile --target=node-linux-x64 --outfile=../dist/fapro-downloader-linux
+
+      - name: Compile for macOS (Apple Silicon)
+        working-directory: ./downloader
+        run: bun build ./src/webfapro.ts --compile --target=node-darwin-arm64 --outfile=../dist/fapro-downloader-macos
+
+      - name: Compile for Windows (x64)
+        working-directory: ./downloader
+        run: bun build ./src/webfapro.ts --compile --target=node-windows-x64 --outfile=../dist/fapro-downloader-win.exe
+
+      - name: Upload Binaries as Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: executable-binaries
+          path: dist/
 
   tag_repo:
     needs: setup
     if: inputs.tags == true
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
@@ -93,32 +140,41 @@ jobs:
           git tag -a "v${{ needs.setup.outputs.use_version }}" -m "v${{ needs.setup.outputs.use_version }}"
           git push origin "v${{ needs.setup.outputs.use_version }}"
 
-
   create_release:
-    needs: [setup, tag_repo]
+    needs: [setup, tag_repo, create_downloaders]
     if: |
       always() && 
       inputs.assets == true && 
       needs.setup.result == 'success' && 
-      (needs.tag_repo.result == 'success' || needs.tag_repo.result == 'skipped')
+      (needs.tag_repo.result == 'success' || needs.tag_repo.result == 'skipped') &&
+      (needs.create_downloaders.result == 'success' || needs.create_downloaders.result == 'skipped')
     runs-on: ubuntu-latest
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       - name: Setup Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v4
         with:
           node-version: "24"
 
       - name: Install dependencies
+        working-directory: ./downloader
         run: npm ci
 
       - name: Build
-        run: npm run build
+        working-directory: ./downloader
+        run: npm run create
+
+      - name: Download Executables
+        if: inputs.downloaders == true
+        uses: actions/download-artifact@v4
+        with:
+          name: executable-binaries
+          path: dist/
 
       - name: Create Release & Upload Assets
         run: |
@@ -130,12 +186,20 @@ jobs:
           zip -r "../$ZIP_NAME" webfonts/ css/
           cd ..
 
+          ASSETS=("$ZIP_NAME")
+
+          if [ "${{ inputs.downloaders }}" == "true" ]; then
+            ASSETS+=("dist/fapro-downloader-linux")
+            ASSETS+=("dist/fapro-downloader-macos")
+            ASSETS+=("dist/fapro-downloader-win.exe")
+          fi
+
           if gh release view "$TAG_NAME" &>/dev/null; then
             echo "Release $TAG_NAME already exists. Overwriting asset..."
-            gh release upload "$TAG_NAME" "$ZIP_NAME" --clobber
+            gh release upload "$TAG_NAME" "${ASSETS[@]}" --clobber
           else
             echo "Release $TAG_NAME does not exists. Creating new release..."
-            gh release create "$TAG_NAME" "$ZIP_NAME" \
+            gh release create "$TAG_NAME" "${ASSETS[@]}" \
               --title "Release $TAG_NAME" \
               --generate-notes
           fi

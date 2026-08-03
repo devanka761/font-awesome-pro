@@ -4,10 +4,11 @@
 npm install --save-exact webfont-awesome-pro
 ```
 
+> Downloadable version: [font-awesome-pro-v7.3.1.zip](https://github.com/devanka761/font-awesome-pro/releases)
+
 Use the Latest [**Font Awesome Pro+**](https://fontawesome.com/) for Free. Get all stylesheets and webfonts into your project easily!
 
-- Package Version: 7.3.2-wip.1 (versions older than 7.2.0 will not work due to the latest anti-bot measures)
-- [NEW] Bypass Version: 1.0
+- Package Version: 7.3.2-wip.2 (versions older than 7.2.0 will not work due to the latest anti-bot measures)
 - Font Awesome Pro+ Version: 7.3.1
 
 ## NOTICE
@@ -19,6 +20,18 @@ This package provides **Paid (Pro+) Version** for the latest official package. I
 
 To unlock commercial use for your own projects, and get an official product license, please consider to go to the Font Awesome official webiste: https://fontawesome.com/plans
 
+## TABLE OF CONTENTS
+- [**NOTICE**](#notice)
+- **SETUP**
+  - [Setup with NPM](#setup)
+  - or [Download font-awesome-pro-v7.3.1.zip](https://github.com/devanka761/font-awesome-pro/releases)
+- **HOW TO USE**
+  - [NPM version](#how-to-use-with-npm)
+  - [Download version](#how-to-use-download-version)
+- **SPECIFY ICON PACKS**
+  - [Use specific icon packs only](#specify-icon-packs)
+- [**PROBLEMS**](#problems)
+
 ## SETUP
 
 Install the package
@@ -29,39 +42,24 @@ npm install --save-exact webfont-awesome-pro
 
 ## USAGE
 
-Choose one from the following how you want to use the font awesome pro+.
+### HOW TO USE: WITH NPM
 
-#### [With Bundler](#bundler-recommended)
-**Recommended** if you understand how to work with bundlers.
-- via [javascript/typescript](#javascripttypescript-with-bundler) with bundler
-- via [scss/css](#scsscss-with-bundler) with bundler
+You're used to working with a bundler, huh?
+- [TypeScript/JavaScript](#typescriptjavascript) with bundler
+- [SCSS/CSS](#scsscss) with bundler
 
-#### [With Downloader](#downloader-not-recommended)
-Recommended if you want to host the font awesome pro+ somewhere and decide the folder to store the font awesome pro+ assets. Then you can connect them to your project manually.
-- via [command line](#command-line)
-- via [script `package.json`](#script-packagejson)
-- via file execution [es modules import](#javascripttypescript-es-modules---import)
-- via file execution [commonjs require](#javascripttypescript-commonjs---require)
+Use your favorite bundler (webpack, vite, etc).
 
-## Bundler (recommended)
+#### TypeScript/JavaScript
 
-You can use some bundlers such as webpack, parcel, etc.
+example `style-main.ts` / `style-main.js`:
 
-### JavaScript/TypeScript with bundler
-> [!TIP]
-> This is the most effective way
-
-**All styles**
 ```javascript
-// example-style.ts or example.js
-// import all font awesome pro+ styles
-
-// with .scss
+// SCSS
 import "webfont-awesome-pro/scss/allstyles.scss";
-// with .css
+
+// or CSS
 import "webfont-awesome-pro/css/allstyles.css";
-// or traditional import
-import("webfont-awesome-pro/scss/allstyles.scss")
 
 // your code
 document.body.innerHTML = `
@@ -71,82 +69,105 @@ document.body.innerHTML = `
 
 ```
 
-**Specific styles**
-```javascript
-// or if you want to import specific
-// font awesome pro+ styles
-// make sure to always import
-// the 'fontawesome.scss' (or .css)
-// before other styles
-import "webfont-awesome-pro/scss/fontawesome.scss";
+#### SCSS/CSS
 
-// then the primary styles
-import "webfont-awesome-pro/scss/solid.scss";
-import "webfont-awesome-pro/scss/regular.scss";
-import "webfont-awesome-pro/scss/duotone.scss";
-import "webfont-awesome-pro/scss/sharp-solid.scss";
-import "webfont-awesome-pro/scss/sharp-duotone-solid.scss";
-
-// then the additional styles
-import "webfont-awesome-pro/scss/chisel-regular.scss";
-import "webfont-awesome-pro/scss/etch-solid.scss";
-import "webfont-awesome-pro/scss/notdog-solid.scss";
-```
-
-### SCSS/CSS with bundler
+example `style.scss` / `style.css`:
 
 ```scss
-// example-main.scss or example-main.css
-// import all font awesome pro+ styles
-
-// import with scss (support: scss)
+// support: SCSS
 @use "webfont-awesome-pro/scss/allstyles.scss";
-// or traditional import (support: scss/css)
+
+// support: CSS, SCSS
 @import "webfont-awesome-pro/scss/allstyles.scss";
-// or even more traditional (support: scss/css)
+
+// support: CSS, SCSS
 @import url("webfont-awesome-pro/scss/allstyles.scss");
 
-// same rule applies for specific styles like the javasript example above
 ```
 
 ---
 
-## Downloader (Not Recommended)
+### HOW TO USE: DOWNLOAD VERSION
 
-> [!NOTE]
-> These method bellow will download the font awesome pro+ assets directly into your project folder.
+Extract `css` and `webfonts` into the same folder.
 
-You decide the folder to store the font awesome pro+ assets.
+Example:
 
-### Command Line
-```bash
-npx fapro
+```
+MY-PROJECT
+│   index.html
+│   style.css
+│   ...
+│
+└───fapro
+    ├───css
+    │     ...css
+    │     ...css
+    │     ...
+    │
+    └───webfonts
+          ...woff2
+          ...woff2
+          ...
 ```
 
-### Script `package.json`
+#### CSS
+
+example `style.css`
+
+```css
+@import "./fapro/css/allstyles.css";
+```
+
+#### HTML
+
+example `index.html`:
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  ... meta, etc
+
+  <link rel="stylesheet" href="./fapro/css/allstyles.css" />
+
+  ... style, theme, script, etc
+
+  <title>MyCoolApp</title>
+</head>
+<body>
+  
+  <main class="main-example">
+    <i class="fa-vellum fa-solid fa-pizza-slice"></i>
+    <i class="fa-pixel fa-regular fa-shirt"></i>
+  </main>
+
+</body>
+</html>
+```
+
+
+### SPECIFY ICON PACKS
+
+You can import specific font awesome pro+ styles. Make sure to always import the `fontawesome.scss` / `fontawesome.css` before other styles.
+
+example `main-style.js` with bundler:
+
 ```javascript
-...
-"scripts": {
-  ...
-  "get-fapro": "fapro"
-}
-```
-```bash
-npm run get-fapro
-```
+import "webfont-awesome-pro/css/fontawesome.css";
 
-### JavaScript/TypeScript ES Modules - import
-```javascript
-import { getFapro } from "webfont-awesome-pro";
+import "webfont-awesome-pro/scss/regular.scss";
+import "webfont-awesome-pro/scss/duotone.scss";
+import "webfont-awesome-pro/scss/sharp-duotone-solid.scss";
 
-// start the downloader
-getFapro();
+import "webfont-awesome-pro/scss/chisel-regular.scss";
+import "webfont-awesome-pro/scss/etch-solid.scss";
+import "webfont-awesome-pro/scss/notdog-solid.scss";
+
+// imported: fa-regular, fa-duotone, fa-sharp-duotone-solid, fa-chisel-regular, fa-etch-solid, fa-notdog-solid
 ```
 
-### JavaScript/TypeScript CommonJS - require
-```javascript
-const { getFapro } = require("webfont-awesome-pro");
+## PROBLEMS?
 
-// start the downloader
-getFapro();
-```
+Please post any bugs as a [GitHub issue](https://github.com/devanka761/font-awesome-pro/issues).

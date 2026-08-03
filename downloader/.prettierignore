@@ -1,0 +1,13 @@
+node_modules
+eslint.config.mjs
+.prettierrc.mjs
+package.json
+renovate.json
+package-lock.json
+tsconfig.json
+README.md
+nodemon.json
+src/json/fonts.json
+dist
+ex
+.github
