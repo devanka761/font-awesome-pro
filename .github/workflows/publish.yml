@@ -108,15 +108,15 @@ jobs:
 
       - name: Compile for Linux (x64)
         working-directory: ./downloader
-        run: bun build ./src/webfapro.ts --compile --target=node-linux-x64 --outfile=../dist/fapro-downloader-linux
+        run: bun build ./src/webfapro.ts --compile --target=bun-linux-x64 --outfile=../dist/fapro-downloader-linux
 
       - name: Compile for macOS (Apple Silicon)
         working-directory: ./downloader
-        run: bun build ./src/webfapro.ts --compile --target=node-darwin-arm64 --outfile=../dist/fapro-downloader-macos
+        run: bun build ./src/webfapro.ts --compile --target=bun-darwin-arm64 --outfile=../dist/fapro-downloader-macos
 
       - name: Compile for Windows (x64)
         working-directory: ./downloader
-        run: bun build ./src/webfapro.ts --compile --target=node-windows-x64 --outfile=../dist/fapro-downloader-win.exe
+        run: bun build ./src/webfapro.ts --compile --target=bun-windows-x64 --outfile=../dist/fapro-downloader-win.exe
 
       - name: Upload Binaries as Artifacts
         uses: actions/upload-artifact@v4
