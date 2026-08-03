@@ -9,9 +9,9 @@ const useDir = "temp"
 
 async function startDownloader(): Promise<void> {
   fs.rmSync(useDir, { recursive: true, force: true })
-  fs.rmSync("./dist/css", { recursive: true, force: true })
-  fs.rmSync("./dist/webfonts", { recursive: true, force: true })
-  fs.rmSync("./dist/scss", { recursive: true, force: true })
+  fs.rmSync("../dist/css", { recursive: true, force: true })
+  fs.rmSync("../dist/webfonts", { recursive: true, force: true })
+  fs.rmSync("../dist/scss", { recursive: true, force: true })
   await waittime(100)
   const { fontlist, useVer, baseUrl } = await devCheckVersion()
   const cssUrls: string[] = await cssDownload(useVer, useDir, fontlist)

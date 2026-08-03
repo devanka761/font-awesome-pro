@@ -1,6 +1,6 @@
 {
   "name": "webfont-awesome-pro",
-  "version": "7.3.2-wip.1",
+  "version": "7.3.2-wip.2",
   "description": "Font Awesome Pro v7.3.1",
   "author": "Devanka761 <contact@devanka.id> (https://devanka.id/)",
   "license": "MIT",
@@ -24,54 +24,27 @@
     "font-face"
   ],
   "exports": {
-    ".": {
-      "import": {
-        "types": "./dist/fapro.d.ts",
-        "default": "./dist/module.mjs"
-      },
-      "require": {
-        "types": "./dist/fapro.d.ts",
-        "default": "./dist/index.cjs"
-      }
-    },
     "./styles/*": "./dist/css/*",
     "./webfonts/*": "./dist/webfonts/*",
     "./css/*": "./dist/css/*",
     "./scss/*": "./dist/scss/*"
   },
-  "main": "dist/index.cjs",
-  "module": "dist/module.mjs",
-  "types": "dist/fapro.d.ts",
   "files": [
     "dist/"
   ],
   "engines": {
     "node": ">=14"
   },
-  "targets": {
-    "main": {
-      "source": "src/index.ts"
-    },
-    "module": {
-      "source": "src/index.ts"
-    },
-    "types": {
-      "source": "src/index.ts"
-    },
-    "cli": {
-      "source": "src/webfapro.ts",
-      "outputFormat": "esmodule"
-    }
-  },
+  
   "scripts": {
-    "type-check": "tsc -p . --pretty --noEmit",
-    "lint": "eslint --ext ts --ext tsx --ext js",
-    "format": "prettier --write .",
-    "check": "prettier --check .",
-    "start": "tsx ./src/webfapro.ts",
-    "clear": "rm -rf dist .parcel-cache",
-    "create": "tsx ./src/create/start.ts",
-    "build": "npm run lint && npm run type-check && npm run format && npm run clear && tsc --emitDeclarationOnly && parcel build && npm run create",
+    "type-check": "cd ./downloader && npm run type-check && cd ..",
+    "lint": "cd ./downloader && npm run lint && cd ..",
+    "format": "cd ./downloader && npm run format && cd ..",
+    "check": "cd ./downloader && npm run check && cd ..",
+    "start": "cd ./downloader && npm run start && cd ..",
+    "clear": "cd ./downloader && npm run clear && cd ..",
+    "create": "cd ./downloader && npm run create && cd ..",
+    "build": "cd ./downloader && npm run build && cd ..",
     "version:patch": "npm --no-git-tag-version version patch",
     "version:minor": "npm --no-git-tag-version version minor",
     "version:major": "npm --no-git-tag-version version major",
@@ -79,28 +52,6 @@
     "pre:minor": "npm --no-git-tag-version version preminor && npm --no-git-tag-version version prerelease --preid wip",
     "pre:major": "npm --no-git-tag-version version premajor && npm --no-git-tag-version version prerelease --preid wip",
     "pre:release": "npm --no-git-tag-version version prerelease",
-    "getfont": "npx fapro"
-  },
-  "bin": {
-    "fapro": "./dist/webfapro.js"
-  },
-  "dependencies": {
-    "nodejs-file-downloader": "^4.13.0",
-    "postcss": "^8.5.16",
-    "postcss-safe-parser": "^7.0.1"
-  },
-  "devDependencies": {
-    "@eslint/js": "^10.0.1",
-    "@parcel/packager-ts": "^2.16.4",
-    "@parcel/transformer-typescript-types": "^2.16.4",
-    "@types/node": "^26.1.0",
-    "@types/postcss-safe-parser": "^5.0.4",
-    "eslint": "^10.6.0",
-    "globals": "^17.7.0",
-    "parcel": "^2.16.4",
-    "prettier": "^3.9.4",
-    "tsx": "^4.23.0",
-    "typescript": "^6.0.3",
-    "typescript-eslint": "^8.63.0"
+    "downloader:install": "cd ./downloader && npm ci && cd .."
   }
 }

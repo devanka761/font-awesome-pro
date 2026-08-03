@@ -6,7 +6,7 @@ let fontUrls: string[] = []
 
 export async function extractFont(filename: string, filedir: string): Promise<void> {
   const css = fs.readFileSync(`./${filedir}/${filename}`, "utf8")
-  postcss()
+  await postcss()
     .process(css, { parser: safeParser, from: undefined })
     .then((result) => {
       result.root.walkAtRules("font-face", (rule) => {

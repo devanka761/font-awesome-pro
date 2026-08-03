@@ -25,6 +25,6 @@ export async function createRelease(useDir: string, cssUrls: string[]): Promise<
   console.log("🕗 Creating Assets Folder")
   manageAllCss(useDir, cssUrls)
   await waittime(1000)
-  fs.cpSync(useDir, "dist", { recursive: true })
+  fs.cpSync(useDir, "../dist", { recursive: true })
   fs.rmSync(useDir, { recursive: true, force: true })
 }
