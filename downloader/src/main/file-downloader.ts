@@ -1,9 +1,10 @@
+import logUpdate from "log-update"
 import { Downloader } from "nodejs-file-downloader"
 import { addDir } from "./dir-checker"
 
 let filesDownloaded: string[] = []
 
-export async function downloadFile(fileurl: string, filedir: string, progress: string | null = null): Promise<void> {
+export async function downloadFile(fileurl: string, filedir: string, progress: string | null = null, useUpdateLog: boolean = false): Promise<void> {
   await addDir(`${filedir}`)
   const downloader = new Downloader({
     url: fileurl,
@@ -45,10 +46,14 @@ export async function downloadFile(fileurl: string, filedir: string, progress: s
     await downloader.download()
     const fileorigin = fileurl.split("/")
     const filename = fileorigin[fileorigin.length - 1]
-    console.log(`🚀 ${progress ? progress + " " : ""}${filename}`)
+    if (useUpdateLog) {
+      logUpdate(`🚀 ${progress ? progress + " " : ""}${filename}`)
+    } else {
+      logUpdate.persist(`🚀 ${progress ? progress + " " : ""}${filename}`)
+    }
     filesDownloaded.push(filename)
   } catch (_error) {
-    console.error("The version you wanted to download is not available. Please use other release version.")
+    logUpdate.persist("The version you wanted to download is not available. Please use other release version.")
   }
 }
 export function getDownloaded(): string[] {

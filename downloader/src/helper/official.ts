@@ -1,3 +1,5 @@
+import logUpdate from "log-update"
+
 const apiUrl = "https://api.fontawesome.com/releases"
 
 export async function getOfficialRelease(): Promise<IfaReleases | null> {
@@ -9,17 +11,17 @@ export async function getOfficialRelease(): Promise<IfaReleases | null> {
       if (!res?.releases) {
         throw new Error("⛔ Error getting version list!")
       }
-      console.log(`✅ Found version list`)
+      logUpdate.persist(`✅ Found version list`)
       return res
     })
     .catch(() => {
-      console.log(`⛔ Error getting version list!`)
+      logUpdate.persist(`⛔ Error getting version list!`)
       return null
     })
 }
 
 export async function getIcons(useVersion: string, n: number): Promise<IfaIcons | null> {
-  const iconsUrl = `${apiUrl}/${useVersion}/icons?page=${n}&page_size=500`
+  const iconsUrl = `${apiUrl}/${useVersion}/icons?page=${n}&page_size=2`
 
   return await fetch(iconsUrl, {
     method: "GET"
@@ -29,11 +31,11 @@ export async function getIcons(useVersion: string, n: number): Promise<IfaIcons 
       if (!res?.icons) {
         throw new Error("⛔ Error getting version list!")
       }
-      console.log(`✅ Found icon list page ${n}`)
+      logUpdate.persist(`✅ Found icon list page ${n}`)
       return res
     })
     .catch(() => {
-      console.log(`⛔ Error getting icon list page ${n}!`)
+      logUpdate.persist(`⛔ Error getting icon list page ${n}!`)
       return null
     })
 }
@@ -64,7 +66,7 @@ export async function getOfficialIcons(useVersion: string): Promise<IsvgParsedLi
       })
     })
 
-    if (iconPack.icons.length >= 1) {
+    if (iconPack.icons.length >= 1 && iconPage < 1) {
       iconPage++
 
       await getAllIcons(iconPage)
@@ -87,11 +89,11 @@ export async function getOfficialFamily(useVersion: string): Promise<string[] | 
       if (!res?.familyStyles) {
         throw new Error("⛔ Error getting family styles!")
       }
-      console.log(`✅ Found family styles`)
+      logUpdate.persist(`✅ Found family styles`)
       return res
     })
     .catch(() => {
-      console.log(`⛔ Error getting family styles!`)
+      logUpdate.persist(`⛔ Error getting family styles!`)
       return null
     })
 

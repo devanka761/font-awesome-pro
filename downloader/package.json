@@ -43,6 +43,7 @@
     "svg": "tsx ./src/create/uploadSVG.ts"
   },
   "dependencies": {
+    "log-update": "^8.0.0",
     "nodejs-file-downloader": "^4.13.0",
     "postcss": "^8.5.16",
     "postcss-safe-parser": "^7.0.1"

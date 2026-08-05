@@ -1,5 +1,6 @@
 import { getOfficialFamily, getOfficialRelease } from "../helper/official"
 import { Ver } from "../helper/fonts"
+import logUpdate from "log-update"
 
 const addedCSS: string[] = ["fontawesome.css", "all.css", "svg.css", "svg-with-js.css", "v4-font-face.css", "v4-shims.css", "v5-font-face.css"]
 const addedJS: string[] = ["fontawesome.js", "all.js", "conflict-detection.js", "v4-shims.js"]
@@ -21,7 +22,7 @@ export async function getBuildVersion(): Promise<Ver> {
     throw new Error("⛔ Error getting family styles!")
   }
 
-  console.log(`✅ Font Awesome Pro+ v${useVersion}`)
+  logUpdate.persist(`✅ Font Awesome Pro+ v${useVersion}`)
 
   const newCssFam = officialFamilies.map((fam) => `${fam}.css`)
   const newJsFam = officialFamilies.map((fam) => `${fam}.js`)

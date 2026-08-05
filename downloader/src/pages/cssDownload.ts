@@ -1,9 +1,10 @@
 import { downloadFile, getDownloaded } from "../main/file-downloader"
 import waittime from "../helper/waittime"
+import logUpdate from "log-update"
 
 export default async function cssDownload(useVer: string, useDir: string, fontlist: string[]): Promise<string[]> {
-  console.log("--------")
-  console.log(`🕗 Downloading All Stylesheets`)
+  logUpdate.persist("--------")
+  logUpdate.persist(`🕗 Downloading All Stylesheets`)
   await waittime(1000)
 
   const dir = `${useDir}/css`
@@ -11,9 +12,9 @@ export default async function cssDownload(useVer: string, useDir: string, fontli
   for (let i = 0; i < fontlist.length; i++) {
     const url = fontlist[i]
     const progress = `[${i + 1}/${fontlist.length}]`
-    await downloadFile(url, dir, progress)
+    await downloadFile(url, dir, progress, true)
   }
-  console.log("✅ Stylesheets Downloaded")
+  logUpdate.persist("✅ Stylesheets Downloaded")
   await waittime(1000)
   return getDownloaded()
 }

@@ -23,14 +23,14 @@ export async function startDownloadSingles(): Promise<void> {
       const dir1 = `../dist/svgs/${shorthands[i]}`
       const dir2 = `../dist/svgs-full/${shorthands[i]}`
 
-      const progress1 = `[${i + 1}/${shorthands.length}]`
-      const progress2 = `[${ipack + 1}/${officialIcons.length}]`
+      const progress1 = `[${ipack + 1}/${officialIcons.length}]`
+      const progress2 = shorthands[i]
 
       const url1 = `${releaseUrl}/svgs/${shorthands[i]}/${iconId}.svg`
       const url2 = `${releaseUrl}/svgs-full/${shorthands[i]}/${iconId}.svg`
 
-      await downloadFile(url1, dir1, `${progress1} ${progress2} [normal]`)
-      await downloadFile(url2, dir2, `${progress1} ${progress2} [full]`)
+      await downloadFile(url1, dir1, `${progress1} ${progress2}`, true)
+      await downloadFile(url2, dir2, `${progress1} ${progress2}`, true)
     }
   }
 }

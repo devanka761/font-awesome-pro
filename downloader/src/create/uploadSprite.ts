@@ -26,6 +26,6 @@ export async function startDownloadSprites(): Promise<void> {
 
     const url = `${releaseUrl}/sprites/${officialFamilies[i]}.svg`
 
-    await downloadFile(url, dir, progress)
+    await downloadFile(url, dir, progress, true)
   }
 }
