@@ -18,7 +18,7 @@ on:
         type: boolean
         required: true
         default: false
-      downloaders:
+      svgs:
         description: "Create and Upload Downloaders"
         type: boolean
         required: true
@@ -34,13 +34,6 @@ jobs:
     outputs:
       use_version: ${{ steps.check.outputs.use_version }}
     steps:
-      - name: Only allow master
-        run: |
-          if [ "${{ github.ref_name }}" != "master" ]; then
-            echo "Workflow may only run from master."
-            exit 1
-          fi
-
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
@@ -84,44 +77,61 @@ jobs:
       - name: Publish
         run: npm publish --provenance --access public --no-git-checks --tag latest
 
-  create_downloaders:
+  create_svgs:
     needs: setup
-    if: inputs.downloaders == true
+    if: inputs.svgs == true
     runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - name: Checkout Source Code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "24"
 
-      - name: Setup Bun Runtime
-        uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: latest
-
-      - name: Install Project Dependencies
+      - name: Install dependencies
         working-directory: ./downloader
         run: npm ci
 
-      - name: Compile for Linux (x64)
+      - name: Build
         working-directory: ./downloader
-        run: bun build ./src/webfapro.ts --compile --target=bun-linux-x64 --outfile=../dist/fapro-downloader-linux
+        run: npm run svg
 
-      - name: Compile for macOS (Apple Silicon)
-        working-directory: ./downloader
-        run: bun build ./src/webfapro.ts --compile --target=bun-darwin-arm64 --outfile=../dist/fapro-downloader-macos
+      - name: Create Zip SVG Singles Normal
+        run: |
+          VERSION="${{ needs.setup.outputs.use_version }}"
+          ZIP_NAME="fapro-singles-only-v$VERSION.zip"
 
-      - name: Compile for Windows (x64)
-        working-directory: ./downloader
-        run: bun build ./src/webfapro.ts --compile --target=bun-windows-x64 --outfile=../dist/fapro-downloader-win.exe
+          cd dist
+          zip -r "../$ZIP_NAME" svgs/
+          cd ..
+
+      - name: Create Zip SVG Singles Full
+        run: |
+          VERSION="${{ needs.setup.outputs.use_version }}"
+          ZIP_NAME="fapro-singles-only-full-v$VERSION.zip"
+
+          cd dist
+          zip -r "../$ZIP_NAME" svgs-full/
+          cd ..
+
+      - name: Create Zip Sprites
+        run: |
+          VERSION="${{ needs.setup.outputs.use_version }}"
+          ZIP_NAME="fapro-sprites-only-v$VERSION.zip"
+
+          cd dist
+          zip -r "../$ZIP_NAME" sprites/
+          cd ..
 
       - name: Upload Binaries as Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: executable-binaries
+          name: svgs-zip
           path: dist/
 
   tag_repo:
@@ -141,13 +151,13 @@ jobs:
           git push origin "v${{ needs.setup.outputs.use_version }}"
 
   create_release:
-    needs: [setup, tag_repo, create_downloaders]
+    needs: [setup, tag_repo, create_svgs]
     if: |
       always() && 
       inputs.assets == true && 
       needs.setup.result == 'success' && 
       (needs.tag_repo.result == 'success' || needs.tag_repo.result == 'skipped') &&
-      (needs.create_downloaders.result == 'success' || needs.create_downloaders.result == 'skipped')
+      (needs.create_svgs.result == 'success' || needs.create_svgs.result == 'skipped')
     runs-on: ubuntu-latest
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -170,10 +180,10 @@ jobs:
         run: npm run create
 
       - name: Download Executables
-        if: inputs.downloaders == true
+        if: inputs.svgs == true
         uses: actions/download-artifact@v4
         with:
-          name: executable-binaries
+          name: svgs-zip
           path: dist/
 
       - name: Create Release & Upload Assets
@@ -188,10 +198,10 @@ jobs:
 
           ASSETS=("$ZIP_NAME")
 
-          if [ "${{ inputs.downloaders }}" == "true" ]; then
-            ASSETS+=("dist/fapro-downloader-linux")
-            ASSETS+=("dist/fapro-downloader-macos")
-            ASSETS+=("dist/fapro-downloader-win.exe")
+          if [ "${{ inputs.svgs }}" == "true" ]; then
+            ASSETS+=("dist/fapro-singles-only-v$VERSION.zip")
+            ASSETS+=("dist/fapro-singles-only-full-v$VERSION.zip")
+            ASSETS+=("dist/fapro-sprites-only-v$VERSION.zip")
           fi
 
           if gh release view "$TAG_NAME" &>/dev/null; then
