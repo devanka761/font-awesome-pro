@@ -19,10 +19,15 @@ on:
         required: true
         default: false
       svgs:
-        description: "Create and Upload Downloaders"
+        description: "Create and Upload SVGs"
         type: boolean
         required: true
         default: false
+      custom_tag:
+        description: "Custom Tag for Release"
+        type: string
+        required: false
+        default: ""
 
 permissions:
   id-token: write
@@ -33,6 +38,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       use_version: ${{ steps.check.outputs.use_version }}
+      release_version: ${{ steps.check.outputs.release_version }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -49,8 +55,18 @@ jobs:
 
           if [ "$LATEST_VERSION" != "$CURRENT_VERSION" ]; then
             echo "use_version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
+            DEFAULT_RELEASE=$CURRENT_VERSION
           else
             echo "use_version=$LATEST_VERSION" >> $GITHUB_OUTPUT
+            DEFAULT_RELEASE=$LATEST_VERSION
+          fi
+
+          CUSTOM_TAG="${{ inputs.custom_tag }}"
+          if [ -n "$CUSTOM_TAG" ]; then
+            CLEAN_TAG=${CUSTOM_TAG#v}
+            echo "release_version=$CLEAN_TAG" >> $GITHUB_OUTPUT
+          else
+            echo "release_version=$DEFAULT_RELEASE" >> $GITHUB_OUTPUT
           fi
 
   publish_npm:
@@ -101,38 +117,21 @@ jobs:
         working-directory: ./downloader
         run: npm run svg
 
-      - name: Create Zip SVG Singles Normal
+      - name: Create Zip SVGs
         run: |
-          VERSION="${{ needs.setup.outputs.use_version }}"
-          ZIP_NAME="fapro-singles-only-v$VERSION.zip"
+          VERSION="${{ needs.setup.outputs.release_version }}"
 
           cd dist
-          zip -r "../$ZIP_NAME" svgs/
-          cd ..
-
-      - name: Create Zip SVG Singles Full
-        run: |
-          VERSION="${{ needs.setup.outputs.use_version }}"
-          ZIP_NAME="fapro-singles-only-full-v$VERSION.zip"
-
-          cd dist
-          zip -r "../$ZIP_NAME" svgs-full/
-          cd ..
-
-      - name: Create Zip Sprites
-        run: |
-          VERSION="${{ needs.setup.outputs.use_version }}"
-          ZIP_NAME="fapro-sprites-only-v$VERSION.zip"
-
-          cd dist
-          zip -r "../$ZIP_NAME" sprites/
+          zip -r "fapro-singles-only-v$VERSION.zip" svgs/
+          zip -r "fapro-singles-only-full-v$VERSION.zip" svgs-full/
+          zip -r "fapro-sprites-only-v$VERSION.zip" sprites/
           cd ..
 
       - name: Upload Binaries as Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: svgs-zip
-          path: dist/
+          path: dist/*.zip
 
   tag_repo:
     needs: setup
@@ -188,7 +187,7 @@ jobs:
 
       - name: Create Release & Upload Assets
         run: |
-          VERSION="${{ needs.setup.outputs.use_version }}"
+          VERSION="${{ needs.setup.outputs.release_version }}"
           ZIP_NAME="font-awesome-pro-v$VERSION.zip"
           TAG_NAME="v$VERSION"
 
