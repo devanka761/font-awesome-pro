@@ -18,11 +18,16 @@ on:
         type: boolean
         required: true
         default: false
-      downloaders:
-        description: "Create and Upload Downloaders"
+      svgs:
+        description: "Create and Upload SVGs"
         type: boolean
         required: true
         default: false
+      custom_tag:
+        description: "Custom Tag for Release"
+        type: string
+        required: false
+        default: ""
 
 permissions:
   id-token: write
@@ -33,14 +38,8 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       use_version: ${{ steps.check.outputs.use_version }}
+      release_version: ${{ steps.check.outputs.release_version }}
     steps:
-      - name: Only allow master
-        run: |
-          if [ "${{ github.ref_name }}" != "master" ]; then
-            echo "Workflow may only run from master."
-            exit 1
-          fi
-
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
@@ -56,8 +55,18 @@ jobs:
 
           if [ "$LATEST_VERSION" != "$CURRENT_VERSION" ]; then
             echo "use_version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
+            DEFAULT_RELEASE=$CURRENT_VERSION
           else
             echo "use_version=$LATEST_VERSION" >> $GITHUB_OUTPUT
+            DEFAULT_RELEASE=$LATEST_VERSION
+          fi
+
+          CUSTOM_TAG="${{ inputs.custom_tag }}"
+          if [ -n "$CUSTOM_TAG" ]; then
+            CLEAN_TAG=${CUSTOM_TAG#v}
+            echo "release_version=$CLEAN_TAG" >> $GITHUB_OUTPUT
+          else
+            echo "release_version=$DEFAULT_RELEASE" >> $GITHUB_OUTPUT
           fi
 
   publish_npm:
@@ -84,45 +93,45 @@ jobs:
       - name: Publish
         run: npm publish --provenance --access public --no-git-checks --tag latest
 
-  create_downloaders:
+  create_svgs:
     needs: setup
-    if: inputs.downloaders == true
+    if: inputs.svgs == true
     runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - name: Checkout Source Code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "24"
 
-      - name: Setup Bun Runtime
-        uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: latest
-
-      - name: Install Project Dependencies
+      - name: Install dependencies
         working-directory: ./downloader
         run: npm ci
 
-      - name: Compile for Linux (x64)
+      - name: Build
         working-directory: ./downloader
-        run: bun build ./src/webfapro.ts --compile --target=bun-linux-x64 --outfile=../dist/fapro-downloader-linux
+        run: npm run svg
 
-      - name: Compile for macOS (Apple Silicon)
-        working-directory: ./downloader
-        run: bun build ./src/webfapro.ts --compile --target=bun-darwin-arm64 --outfile=../dist/fapro-downloader-macos
+      - name: Create Zip SVGs
+        run: |
+          VERSION="${{ needs.setup.outputs.release_version }}"
 
-      - name: Compile for Windows (x64)
-        working-directory: ./downloader
-        run: bun build ./src/webfapro.ts --compile --target=bun-windows-x64 --outfile=../dist/fapro-downloader-win.exe
+          cd dist
+          zip -r "fapro-singles-only-v$VERSION.zip" svgs/
+          zip -r "fapro-singles-only-full-v$VERSION.zip" svgs-full/
+          zip -r "fapro-sprites-only-v$VERSION.zip" sprites/
+          cd ..
 
       - name: Upload Binaries as Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: executable-binaries
-          path: dist/
+          name: svgs-zip
+          path: dist/*.zip
 
   tag_repo:
     needs: setup
@@ -141,13 +150,13 @@ jobs:
           git push origin "v${{ needs.setup.outputs.use_version }}"
 
   create_release:
-    needs: [setup, tag_repo, create_downloaders]
+    needs: [setup, tag_repo, create_svgs]
     if: |
       always() && 
       inputs.assets == true && 
       needs.setup.result == 'success' && 
       (needs.tag_repo.result == 'success' || needs.tag_repo.result == 'skipped') &&
-      (needs.create_downloaders.result == 'success' || needs.create_downloaders.result == 'skipped')
+      (needs.create_svgs.result == 'success' || needs.create_svgs.result == 'skipped')
     runs-on: ubuntu-latest
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -170,15 +179,15 @@ jobs:
         run: npm run create
 
       - name: Download Executables
-        if: inputs.downloaders == true
+        if: inputs.svgs == true
         uses: actions/download-artifact@v4
         with:
-          name: executable-binaries
+          name: svgs-zip
           path: dist/
 
       - name: Create Release & Upload Assets
         run: |
-          VERSION="${{ needs.setup.outputs.use_version }}"
+          VERSION="${{ needs.setup.outputs.release_version }}"
           ZIP_NAME="font-awesome-pro-v$VERSION.zip"
           TAG_NAME="v$VERSION"
 
@@ -188,10 +197,10 @@ jobs:
 
           ASSETS=("$ZIP_NAME")
 
-          if [ "${{ inputs.downloaders }}" == "true" ]; then
-            ASSETS+=("dist/fapro-downloader-linux")
-            ASSETS+=("dist/fapro-downloader-macos")
-            ASSETS+=("dist/fapro-downloader-win.exe")
+          if [ "${{ inputs.svgs }}" == "true" ]; then
+            ASSETS+=("dist/fapro-singles-only-v$VERSION.zip")
+            ASSETS+=("dist/fapro-singles-only-full-v$VERSION.zip")
+            ASSETS+=("dist/fapro-sprites-only-v$VERSION.zip")
           fi
 
           if gh release view "$TAG_NAME" &>/dev/null; then

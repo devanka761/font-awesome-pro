@@ -1,6 +1,6 @@
 {
   "name": "webfont-awesome-pro",
-  "version": "7.3.2-wip.2",
+  "version": "7.3.2-wip.3",
   "description": "Font Awesome Pro v7.3.1",
   "author": "Devanka761 <contact@devanka.id> (https://devanka.id/)",
   "license": "MIT",
@@ -24,6 +24,7 @@
     "font-face"
   ],
   "exports": {
+    "./js/*": "./dist/js/*",
     "./styles/*": "./dist/css/*",
     "./webfonts/*": "./dist/webfonts/*",
     "./css/*": "./dist/css/*",
@@ -35,14 +36,12 @@
   "engines": {
     "node": ">=14"
   },
-  
   "scripts": {
     "type-check": "cd ./downloader && npm run type-check && cd ..",
     "lint": "cd ./downloader && npm run lint && cd ..",
     "format": "cd ./downloader && npm run format && cd ..",
     "check": "cd ./downloader && npm run check && cd ..",
     "start": "cd ./downloader && npm run start && cd ..",
-    "clear": "cd ./downloader && npm run clear && cd ..",
     "create": "cd ./downloader && npm run create && cd ..",
     "build": "cd ./downloader && npm run build && cd ..",
     "version:patch": "npm --no-git-tag-version version patch",
@@ -52,6 +51,7 @@
     "pre:minor": "npm --no-git-tag-version version preminor && npm --no-git-tag-version version prerelease --preid wip",
     "pre:major": "npm --no-git-tag-version version premajor && npm --no-git-tag-version version prerelease --preid wip",
     "pre:release": "npm --no-git-tag-version version prerelease",
-    "downloader:install": "cd ./downloader && npm ci && cd .."
+    "downloader:install": "cd ./downloader && npm ci && cd ..",
+    "downloader:svg": "cd ./downloader && npm run svg && cd .."
   }
 }

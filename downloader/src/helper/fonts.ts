@@ -6,6 +6,7 @@ export interface Ver {
   version: string
   root: string
   css: string[]
+  js: string[]
 }
 
 export default fonts as Ver

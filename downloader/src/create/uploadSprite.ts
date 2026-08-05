@@ -1,0 +1,31 @@
+import { getOfficialFamily, getOfficialRelease } from "../helper/official"
+import defVer from "../helper/fonts"
+import { downloadFile } from "../main/file-downloader"
+
+const baseUrl = "https://site-assets.fontawesome.com/releases"
+
+export async function startDownloadSprites(): Promise<void> {
+  const officialRelease = await getOfficialRelease()
+
+  const officialLatest = officialRelease?.releases?.find((k) => k.isLatest === true)
+
+  const useVersion = officialLatest?.version || defVer.version
+
+  const officialFamilies = await getOfficialFamily(useVersion)
+
+  if (!officialFamilies) {
+    throw new Error("⛔ Error getting family styles!")
+  }
+
+  const releaseUrl = `${baseUrl}/v${useVersion}`
+
+  for (let i = 0; i < officialFamilies.length; i++) {
+    const dir = `../dist/sprites`
+
+    const progress = `[${i + 1}/${officialFamilies.length}]`
+
+    const url = `${releaseUrl}/sprites/${officialFamilies[i]}.svg`
+
+    await downloadFile(url, dir, progress, true)
+  }
+}

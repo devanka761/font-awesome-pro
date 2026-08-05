@@ -23,51 +23,16 @@
     "webfont",
     "font-face"
   ],
-  "exports": {
-    ".": {
-      "import": {
-        "types": "./dist/fapro.d.ts",
-        "default": "./dist/module.mjs"
-      },
-      "require": {
-        "types": "./dist/fapro.d.ts",
-        "default": "./dist/index.cjs"
-      }
-    }
-  },
-  "main": "dist/index.cjs",
-  "module": "dist/module.mjs",
-  "types": "dist/fapro.d.ts",
-  "files": [
-    "dist/"
-  ],
   "engines": {
     "node": ">=14"
-  },
-  "targets": {
-    "main": {
-      "source": "src/index.ts"
-    },
-    "module": {
-      "source": "src/index.ts"
-    },
-    "types": {
-      "source": "src/index.ts"
-    },
-    "cli": {
-      "source": "src/webfapro.ts",
-      "outputFormat": "esmodule"
-    }
   },
   "scripts": {
     "type-check": "tsc -p . --pretty --noEmit",
     "lint": "eslint --ext ts --ext tsx --ext js",
     "format": "prettier --write .",
     "check": "prettier --check .",
-    "start": "tsx ./src/webfapro.ts",
-    "clear": "rm -rf dist .parcel-cache",
     "create": "tsx ./src/create/start.ts",
-    "build": "npm run lint && npm run type-check && npm run format && npm run clear && tsc --emitDeclarationOnly && parcel build && npm run create",
+    "build": "npm run lint && npm run type-check && npm run format  && tsc --emitDeclarationOnly && tsx ./src/build.ts",
     "version:patch": "npm --no-git-tag-version version patch",
     "version:minor": "npm --no-git-tag-version version minor",
     "version:major": "npm --no-git-tag-version version major",
@@ -75,25 +40,20 @@
     "pre:minor": "npm --no-git-tag-version version preminor && npm --no-git-tag-version version prerelease --preid wip",
     "pre:major": "npm --no-git-tag-version version premajor && npm --no-git-tag-version version prerelease --preid wip",
     "pre:release": "npm --no-git-tag-version version prerelease",
-    "getfont": "npx fapro"
-  },
-  "bin": {
-    "fapro": "./dist/webfapro.js"
+    "svg": "tsx ./src/create/uploadSVG.ts"
   },
   "dependencies": {
+    "log-update": "^8.0.0",
     "nodejs-file-downloader": "^4.13.0",
     "postcss": "^8.5.16",
     "postcss-safe-parser": "^7.0.1"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "@parcel/packager-ts": "^2.16.4",
-    "@parcel/transformer-typescript-types": "^2.16.4",
     "@types/node": "^26.1.0",
     "@types/postcss-safe-parser": "^5.0.4",
     "eslint": "^10.6.0",
     "globals": "^17.7.0",
-    "parcel": "^2.16.4",
     "prettier": "^3.9.4",
     "tsx": "^4.23.0",
     "typescript": "^6.0.3",
