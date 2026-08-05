@@ -21,7 +21,7 @@ export async function getOfficialRelease(): Promise<IfaReleases | null> {
 }
 
 export async function getIcons(useVersion: string, n: number): Promise<IfaIcons | null> {
-  const iconsUrl = `${apiUrl}/${useVersion}/icons?page=${n}&page_size=2`
+  const iconsUrl = `${apiUrl}/${useVersion}/icons?page=${n}&page_size=500`
 
   return await fetch(iconsUrl, {
     method: "GET"
@@ -66,7 +66,7 @@ export async function getOfficialIcons(useVersion: string): Promise<IsvgParsedLi
       })
     })
 
-    if (iconPack.icons.length >= 1 && iconPage < 1) {
+    if (iconPack.icons.length >= 1) {
       iconPage++
 
       await getAllIcons(iconPage)

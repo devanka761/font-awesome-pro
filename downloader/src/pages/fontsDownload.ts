@@ -27,7 +27,7 @@ export async function downloadFonts(fonts: string[], filedir: string, baseUrl: s
     const font = fonts[i].replace("..", "")
     const url = `${fonturl}${font}`
     const progress = `[${i + 1}/${fonts.length}]`
-    await downloadFile(url, dir, progress, true)
+    await downloadFile(url, dir, progress)
   }
   logUpdate.persist("✅ Webfonts Downloaded")
 }

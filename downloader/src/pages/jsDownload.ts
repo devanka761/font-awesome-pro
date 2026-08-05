@@ -12,7 +12,7 @@ export default async function jsDownload(useVer: string, useDir: string, scriptl
   for (let i = 0; i < scriptlist.length; i++) {
     const url = scriptlist[i]
     const progress = `[${i + 1}/${scriptlist.length}]`
-    await downloadFile(url, dir, progress, true)
+    await downloadFile(url, dir, progress)
   }
   logUpdate.persist("✅ Scripts Downloaded")
   await waittime(1000)

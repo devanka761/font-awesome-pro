@@ -30,7 +30,7 @@ export async function startDownloadSingles(): Promise<void> {
       const url2 = `${releaseUrl}/svgs-full/${shorthands[i]}/${iconId}.svg`
 
       await downloadFile(url1, dir1, `${progress1} ${progress2}`, true)
-      await downloadFile(url2, dir2, `${progress1} ${progress2}`, true)
+      await downloadFile(url2, dir2, `${progress1} ${progress2}`)
     }
   }
 }

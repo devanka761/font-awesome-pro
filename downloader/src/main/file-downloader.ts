@@ -4,7 +4,7 @@ import { addDir } from "./dir-checker"
 
 let filesDownloaded: string[] = []
 
-export async function downloadFile(fileurl: string, filedir: string, progress: string | null = null, useUpdateLog: boolean = false): Promise<void> {
+export async function downloadFile(fileurl: string, filedir: string, progress: string | null = null, useNoLog: boolean = false): Promise<void> {
   await addDir(`${filedir}`)
   const downloader = new Downloader({
     url: fileurl,
@@ -46,10 +46,8 @@ export async function downloadFile(fileurl: string, filedir: string, progress: s
     await downloader.download()
     const fileorigin = fileurl.split("/")
     const filename = fileorigin[fileorigin.length - 1]
-    if (useUpdateLog) {
+    if (!useNoLog) {
       logUpdate(`🚀 ${progress ? progress + " " : ""}${filename}`)
-    } else {
-      logUpdate.persist(`🚀 ${progress ? progress + " " : ""}${filename}`)
     }
     filesDownloaded.push(filename)
   } catch (_error) {

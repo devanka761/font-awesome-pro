@@ -12,7 +12,7 @@ export default async function cssDownload(useVer: string, useDir: string, fontli
   for (let i = 0; i < fontlist.length; i++) {
     const url = fontlist[i]
     const progress = `[${i + 1}/${fontlist.length}]`
-    await downloadFile(url, dir, progress, true)
+    await downloadFile(url, dir, progress)
   }
   logUpdate.persist("✅ Stylesheets Downloaded")
   await waittime(1000)
