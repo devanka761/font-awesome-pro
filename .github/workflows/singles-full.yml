@@ -1,23 +1,8 @@
-name: Publish Font-Awesome-Pro
+name: Create and Upload SVG Singles Full
 
 on:
   workflow_dispatch:
     inputs:
-      publish:
-        description: "Publish NPM Package"
-        type: boolean
-        required: true
-        default: false
-      tags:
-        description: "Release Tag"
-        type: boolean
-        required: true
-        default: false
-      assets:
-        description: "Create and Upload Assets"
-        type: boolean
-        required: true
-        default: false
       custom_tag:
         description: "Custom Tag for Release"
         type: string
@@ -64,53 +49,8 @@ jobs:
             echo "release_version=$DEFAULT_RELEASE" >> $GITHUB_OUTPUT
           fi
 
-  publish_npm:
+  create_singles:
     needs: setup
-    if: inputs.publish == true
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "24"
-          registry-url: "https://registry.npmjs.org"
-
-      - name: Install dependencies
-        working-directory: ./downloader
-        run: npm ci
-
-      - name: Build
-        working-directory: ./downloader
-        run: npm run create
-
-      - name: Publish
-        run: npm publish --provenance --access public --no-git-checks --tag latest
-
-  tag_repo:
-    needs: setup
-    if: inputs.tags == true
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Tag release
-        run: |
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-          git tag -a "v${{ needs.setup.outputs.use_version }}" -m "v${{ needs.setup.outputs.use_version }}"
-          git push origin "v${{ needs.setup.outputs.use_version }}"
-
-  create_release:
-    needs: [setup, tag_repo]
-    if: |
-      always() && 
-      inputs.assets == true && 
-      needs.setup.result == 'success' && 
-      (needs.tag_repo.result == 'success' || needs.tag_repo.result == 'skipped')
     runs-on: ubuntu-latest
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -130,16 +70,16 @@ jobs:
 
       - name: Build
         working-directory: ./downloader
-        run: npm run create
+        run: npm run svg-full-singles
 
-      - name: Create Release & Upload Assets
+      - name: Create ZIP for files
         run: |
           VERSION="${{ needs.setup.outputs.release_version }}"
-          ZIP_NAME="font-awesome-pro-v$VERSION.zip"
+          ZIP_NAME="SVG-singles-full-only-v$VERSION.zip"
           TAG_NAME="v$VERSION"
 
           cd dist
-          zip -r "../$ZIP_NAME" webfonts/ css/
+          zip -r "../$ZIP_NAME" svgs/
           cd ..
 
           if gh release view "$TAG_NAME" &>/dev/null; then

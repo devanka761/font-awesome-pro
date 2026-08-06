@@ -1,6 +1,7 @@
 import logUpdate from "log-update"
 import { Downloader } from "nodejs-file-downloader"
 import { addDir } from "./dir-checker"
+import waittime from "../helper/waittime"
 
 let filesDownloaded: string[] = []
 
@@ -42,17 +43,32 @@ export async function downloadFile(fileurl: string, filedir: string, progress: s
       "sec-ch-ua-platform": '"Windows"'
     }
   })
-  try {
-    await downloader.download()
-    const fileorigin = fileurl.split("/")
-    const filename = fileorigin[fileorigin.length - 1]
-    if (!useNoLog) {
-      logUpdate(`🚀 ${progress ? progress + " " : ""}${filename}`)
+
+  let retry: number = 1
+
+  const commitDownload = async () => {
+    try {
+      await downloader.download()
+      const fileorigin = fileurl.split("/")
+      const filename = fileorigin[fileorigin.length - 1]
+      if (!useNoLog) {
+        logUpdate(`🚀 ${progress ? progress + " " : ""}${filename}`)
+      }
+      filesDownloaded.push(filename)
+    } catch (_error) {
+      if (retry > 10) return
+
+      logUpdate(`⛔ Error ${fileurl} 🕗 Retrying #${retry}`)
+
+      retry++
+
+      await waittime(3000)
+
+      return await commitDownload()
     }
-    filesDownloaded.push(filename)
-  } catch (_error) {
-    logUpdate.persist("The version you wanted to download is not available. Please use other release version.")
   }
+
+  await commitDownload()
 }
 export function getDownloaded(): string[] {
   const files: string[] = [...filesDownloaded]

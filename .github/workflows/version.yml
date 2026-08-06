@@ -1,0 +1,77 @@
+name: Font Awesome Version Checker
+
+on:
+  schedule:
+    - cron: "0 1 * * *"
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: write
+  issues: write
+
+jobs:
+  setup:
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    outputs:
+      current_version: ${{ steps.check.outputs.current_version }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check the version
+        id: check
+        run: |
+          LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
+          LATEST_VERSION=${LATEST_TAG#v}
+          echo "current_version=$LATEST_VERSION" >> $GITHUB_OUTPUT
+
+  fa_api:
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    outputs:
+      latest_version: ${{ steps.fetch.outputs.latest_version }}
+      status: ${{steps.fetch.outputs.status}}
+    steps:
+      - name: Getting Font Awesome Latest Version
+        id: fetch
+        run: |
+          RESPONSE=$(curl -s "https://api.fontawesome.com/releases")
+          LATEST_VERSION=$(echo "$RESPONSE" | jq -r '.releases[]? | select(.isLatest == true) | .version' 2>/dev/null)
+
+          if [ -n "$LATEST_VERSION" ] && [ "$LATEST_VERSION" != "null" ]; then
+            echo "latest_version=$LATEST_VERSION" >> $GITHUB_OUTPUT
+            echo "status=ok" >> $GITHUB_OUTPUT
+          else
+            echo "latest_version=0.0.0" >> $GITHUB_OUTPUT
+            echo "status=failure" >> $GITHUB_OUTPUT
+          fi
+
+  check_version:
+    needs: [setup, fa_api]
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Create issue on version update
+        if: needs.fa_api.outputs.status == 'ok' && needs.setup.outputs.current_version != needs.fa_api.outputs.latest_version
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          VERSION="${{needs.fa_api.outputs.latest_version}}"
+          ISSUE_TITLE="New Font Awesome v$VERSION Released"
+
+          EXISTING_ISSUE=$(gh issue list --state open --search "\"$ISSUE_TITLE\" in:title" --json number --jq '.[0].number')
+
+          if [ -n "$EXISTING_ISSUE" ] && [ "$EXISTING_ISSUE" != "null" ]; then
+            echo "Issue for v$VERSION already exists (#$EXISTING_ISSUE)"
+          else
+            gh issue create \
+              --title "$ISSUE_TITLE" \
+              --body "The scheduled version checker found the latest Font Awesome Pro+ version" \
+              --label "ship it"
+          fi

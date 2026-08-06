@@ -40,7 +40,9 @@
     "pre:minor": "npm --no-git-tag-version version preminor && npm --no-git-tag-version version prerelease --preid wip",
     "pre:major": "npm --no-git-tag-version version premajor && npm --no-git-tag-version version prerelease --preid wip",
     "pre:release": "npm --no-git-tag-version version prerelease",
-    "svg": "tsx ./src/create/uploadSVG.ts"
+    "svg-singles": "tsx ./src/create/uploadSingles.ts",
+    "svg-full-singles": "tsx ./src/create/uploadFullSingles.ts",
+    "svg-sprites": "tsx ./src/create/uploadSprites.ts"
   },
   "dependencies": {
     "log-update": "^8.0.0",

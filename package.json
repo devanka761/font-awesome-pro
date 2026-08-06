@@ -51,7 +51,8 @@
     "pre:minor": "npm --no-git-tag-version version preminor && npm --no-git-tag-version version prerelease --preid wip",
     "pre:major": "npm --no-git-tag-version version premajor && npm --no-git-tag-version version prerelease --preid wip",
     "pre:release": "npm --no-git-tag-version version prerelease",
-    "downloader:install": "cd ./downloader && npm ci && cd ..",
-    "downloader:svg": "cd ./downloader && npm run svg && cd .."
+    "svg-singles": "cd ./downloader && npm run svg-singles && cd ..",
+    "svg-full-singles": "cd ./downloader && npm run svg-full-singles && cd ..",
+    "svg-sprites": "cd ./downloader && npm run svg-sprites && cd .."
   }
 }
