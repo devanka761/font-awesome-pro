@@ -23,11 +23,11 @@ export async function startDownloadSingles(): Promise<void> {
     const iconId = officialIcons[ipack].id
 
     for (let i = 0; i < shorthands.length; i++) {
-      const dir = `../dist/svgs/${shorthands[i]}`
+      const dir = `../dist/svgs-full/${shorthands[i]}`
 
       const progress = `[${ipack + 1}/${officialIcons.length}]`
 
-      const url = `${releaseUrl}/svgs/${shorthands[i]}/${iconId}.svg`
+      const url = `${releaseUrl}/svgs-full/${shorthands[i]}/${iconId}.svg`
 
       const usePrintLog = ipack > lastPack
 
@@ -37,7 +37,7 @@ export async function startDownloadSingles(): Promise<void> {
     }
   }
 
-  logUpdate.persist("✅ SVG Singles Downloaded")
+  logUpdate.persist("✅ SVG Singles-Full Downloaded")
 }
 
 startDownloadSingles()

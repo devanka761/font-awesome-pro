@@ -1,6 +1,7 @@
 import { getOfficialFamily, getOfficialRelease } from "../helper/official"
 import defVer from "../helper/fonts"
 import { downloadFile } from "../main/file-downloader"
+import logUpdate from "log-update"
 
 const baseUrl = "https://site-assets.fontawesome.com/releases"
 
@@ -28,4 +29,8 @@ export async function startDownloadSprites(): Promise<void> {
 
     await downloadFile(url, dir, progress, true)
   }
+
+  logUpdate.persist("✅ SVG Sprites Downloaded")
 }
+
+startDownloadSprites()
