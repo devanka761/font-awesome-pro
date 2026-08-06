@@ -79,7 +79,7 @@ jobs:
           TAG_NAME="v$VERSION"
 
           cd dist
-          zip -r "../$ZIP_NAME" svgs/
+          zip -r "../$ZIP_NAME" sprites/
           cd ..
 
           if gh release view "$TAG_NAME" &>/dev/null; then
