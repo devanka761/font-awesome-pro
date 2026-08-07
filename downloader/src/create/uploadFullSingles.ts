@@ -1,9 +1,12 @@
+import fs from "fs"
 import { getOfficialIcons, getOfficialRelease } from "../helper/official"
 import defVer from "../helper/fonts"
 import { downloadFile } from "../main/file-downloader"
-import logUpdate from "log-update"
+import waittime from "../helper/waittime"
 
 const baseUrl = "https://site-assets.fontawesome.com/releases"
+
+const isNewOnly = process.argv.some((k) => k === "--newOnly=true")
 
 export async function startDownloadSingles(): Promise<void> {
   const officialRelease = await getOfficialRelease()
@@ -27,17 +30,26 @@ export async function startDownloadSingles(): Promise<void> {
 
       const progress = `[${ipack + 1}/${officialIcons.length}]`
 
-      const url = `${releaseUrl}/svgs-full/${shorthands[i]}/${iconId}.svg`
+      const fileName = `${iconId}.svg`
+
+      const url = `${releaseUrl}/svgs-full/${shorthands[i]}/${fileName}`
 
       const usePrintLog = ipack > lastPack
 
       lastPack = ipack
 
-      await downloadFile(url, dir, `${progress}`, !usePrintLog)
+      const fileExists = fs.existsSync(`${dir}/${fileName}`)
+
+      if (isNewOnly && fileExists) {
+        console.log(`? ${progress} ${fileName} (existed)`)
+        await waittime(2000)
+      } else {
+        await downloadFile(url, dir, progress, !usePrintLog)
+      }
     }
   }
 
-  logUpdate.persist("✅ SVG Singles-Full Downloaded")
+  console.log("+ SVG Singles-Full Downloaded")
 }
 
 startDownloadSingles()

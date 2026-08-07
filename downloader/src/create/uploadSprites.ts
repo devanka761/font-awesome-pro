@@ -1,9 +1,12 @@
+import fs from "fs"
 import { getOfficialFamily, getOfficialRelease } from "../helper/official"
 import defVer from "../helper/fonts"
 import { downloadFile } from "../main/file-downloader"
-import logUpdate from "log-update"
+import waittime from "../helper/waittime"
 
 const baseUrl = "https://site-assets.fontawesome.com/releases"
+
+const isNewOnly = process.argv.some((k) => k === "--newOnly=true")
 
 export async function startDownloadSprites(): Promise<void> {
   const officialRelease = await getOfficialRelease()
@@ -15,7 +18,7 @@ export async function startDownloadSprites(): Promise<void> {
   const officialFamilies = await getOfficialFamily(useVersion)
 
   if (!officialFamilies) {
-    throw new Error("⛔ Error getting family styles!")
+    throw new Error("- Error getting family styles!")
   }
 
   const releaseUrl = `${baseUrl}/v${useVersion}`
@@ -25,12 +28,21 @@ export async function startDownloadSprites(): Promise<void> {
 
     const progress = `[${i + 1}/${officialFamilies.length}]`
 
-    const url = `${releaseUrl}/sprites/${officialFamilies[i]}.svg`
+    const fileName = `${officialFamilies[i]}.svg`
 
-    await downloadFile(url, dir, progress)
+    const url = `${releaseUrl}/sprites/${fileName}`
+
+    const fileExists = fs.existsSync(`${dir}/${fileName}`)
+
+    if (isNewOnly && fileExists) {
+      console.log(`? ${progress} ${fileName} (existed)`)
+      await waittime(2000)
+    } else {
+      await downloadFile(url, dir, progress)
+    }
   }
 
-  logUpdate.persist("✅ SVG Sprites Downloaded")
+  console.log("+ SVG Sprites Downloaded")
 }
 
 startDownloadSprites()

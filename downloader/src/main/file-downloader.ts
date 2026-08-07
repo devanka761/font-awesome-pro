@@ -1,4 +1,3 @@
-import logUpdate from "log-update"
 import { Downloader } from "nodejs-file-downloader"
 import { addDir } from "./dir-checker"
 import waittime from "../helper/waittime"
@@ -52,13 +51,13 @@ export async function downloadFile(fileurl: string, filedir: string, progress: s
       const fileorigin = fileurl.split("/")
       const filename = fileorigin[fileorigin.length - 1]
       if (!useNoLog) {
-        logUpdate(`🚀 ${progress ? progress + " " : ""}${filename}`)
+        console.log(`+ ${progress ? progress + " " : ""}${filename}`)
       }
       filesDownloaded.push(filename)
     } catch (_error) {
       if (retry > 10) return
 
-      logUpdate(`⛔ Error ${fileurl} 🕗 Retrying #${retry}`)
+      console.log(`- Error ${fileurl} - Retrying #${retry}`)
 
       retry++
 

@@ -2,7 +2,7 @@ name: Font Awesome Version Checker
 
 on:
   schedule:
-    - cron: "0 1 * * *"
+    - cron: "44 22 * * *"
   workflow_dispatch:
 
 permissions:

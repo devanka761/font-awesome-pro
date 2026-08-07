@@ -1,6 +1,5 @@
 import fs from "fs"
 import waittime from "../helper/waittime"
-import logUpdate from "log-update"
 
 const pName = "font-awesome-pro"
 const cssFolder = `${pName}/css`
@@ -22,8 +21,8 @@ function manageAllCss(useDir: string, cssUrls: string[]): void {
 
 export async function createRelease(useDir: string, cssUrls: string[]): Promise<void> {
   await waittime(1000)
-  logUpdate.persist("--------")
-  logUpdate.persist("🕗 Creating Assets Folder")
+  console.log("--------")
+  console.log("? Creating Assets Folder")
   manageAllCss(useDir, cssUrls)
   await waittime(1000)
   fs.cpSync(useDir, "../dist", { recursive: true })

@@ -81,7 +81,11 @@ jobs:
         working-directory: ./downloader
         run: npm ci
 
-      - name: Build
+      - name: Build Project
+        working-directory: ./downloader
+        run: npm run build
+
+      - name: Create releases file
         working-directory: ./downloader
         run: npm run create
 
@@ -128,7 +132,11 @@ jobs:
         working-directory: ./downloader
         run: npm ci
 
-      - name: Build
+      - name: Build Project
+        working-directory: ./downloader
+        run: npm run build
+
+      - name: Create releases file
         working-directory: ./downloader
         run: npm run create
 
@@ -139,7 +147,7 @@ jobs:
           TAG_NAME="v$VERSION"
 
           cd dist
-          zip -r "../$ZIP_NAME" webfonts/ css/ js/ scss/
+          zip -r "../$ZIP_NAME" webfonts/ css/ js/
           cd ..
 
           if gh release view "$TAG_NAME" &>/dev/null; then
@@ -148,6 +156,5 @@ jobs:
           else
             echo "Release $TAG_NAME does not exists. Creating new release..."
             gh release create "$TAG_NAME" "$ZIP_NAME" \
-              --title "Release $TAG_NAME" \
-              --generate-notes
+              --title "Font Awesome Pro+ $TAG_NAME"
           fi

@@ -1,10 +1,9 @@
 import { downloadFile, getDownloaded } from "../main/file-downloader"
 import waittime from "../helper/waittime"
-import logUpdate from "log-update"
 
 export default async function jsDownload(useVer: string, useDir: string, scriptlist: string[]): Promise<string[]> {
-  logUpdate.persist("--------")
-  logUpdate.persist(`🕗 Downloading All Scripts`)
+  console.log("--------")
+  console.log(`? Downloading All Scripts`)
   await waittime(1000)
 
   const dir = `${useDir}/js`
@@ -14,7 +13,7 @@ export default async function jsDownload(useVer: string, useDir: string, scriptl
     const progress = `[${i + 1}/${scriptlist.length}]`
     await downloadFile(url, dir, progress)
   }
-  logUpdate.persist("✅ Scripts Downloaded")
+  console.log("+ Scripts Downloaded")
   await waittime(1000)
 
   return getDownloaded()

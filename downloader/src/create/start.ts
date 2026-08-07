@@ -5,7 +5,6 @@ import { downloadFonts, readFonts } from "../pages/fontsDownload"
 import { createRelease } from "./release"
 import devCheckVersion from "./devCheckVersion"
 import jsDownload from "../pages/jsDownload"
-import logUpdate from "log-update"
 
 const useDir = "temp"
 
@@ -31,12 +30,12 @@ async function startDownloader(): Promise<void> {
 
   await createRelease(useDir, cssUrls)
 
-  logUpdate.persist(`✅ Font Awesome ${useVer.split(".")[0]} Pro Plus v${useVer} is Ready!`)
+  console.log(`+ Font Awesome ${useVer.split(".")[0]} Pro Plus v${useVer} is Ready!`)
   await waittime(1000)
 
-  logUpdate.persist("--------")
-  logUpdate.persist(" ")
-  logUpdate.persist("DONE")
+  console.log("--------")
+  console.log(" ")
+  console.log("DONE")
 
   await waittime(1000)
 }

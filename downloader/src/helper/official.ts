@@ -1,5 +1,3 @@
-import logUpdate from "log-update"
-
 const apiUrl = "https://api.fontawesome.com/releases"
 
 export async function getOfficialRelease(): Promise<IfaReleases | null> {
@@ -9,13 +7,13 @@ export async function getOfficialRelease(): Promise<IfaReleases | null> {
     .then((res) => res.json())
     .then((res) => {
       if (!res?.releases) {
-        throw new Error("⛔ Error getting version list!")
+        throw new Error("- Error getting version list!")
       }
-      logUpdate.persist(`✅ Found version list`)
+      console.log(`+ Found version list`)
       return res
     })
     .catch(() => {
-      logUpdate.persist(`⛔ Error getting version list!`)
+      console.log(`- Error getting version list!`)
       return null
     })
 }
@@ -29,13 +27,13 @@ export async function getIcons(useVersion: string, n: number): Promise<IfaIcons 
     .then((res) => res.json())
     .then((res) => {
       if (!res?.icons) {
-        throw new Error("⛔ Error getting version list!")
+        throw new Error("- Error getting version list!")
       }
-      logUpdate.persist(`✅ Found icon list page ${n}`)
+      console.log(`+ Found icon list page ${n}`)
       return res
     })
     .catch(() => {
-      logUpdate.persist(`⛔ Error getting icon list page ${n}!`)
+      console.log(`- Error getting icon list page ${n}!`)
       return null
     })
 }
@@ -48,7 +46,7 @@ export async function getOfficialIcons(useVersion: string): Promise<IsvgParsedLi
   const getAllIcons = async (n: number) => {
     const iconPack = await getIcons(useVersion, n)
     if (!iconPack || !iconPack.icons) {
-      throw new Error(`⛔ Error icon list page ${n}!`)
+      throw new Error(`- Error icon list page ${n}!`)
     }
 
     const iconObject = iconPack.icons
@@ -87,13 +85,13 @@ export async function getOfficialFamily(useVersion: string): Promise<string[] | 
     .then((res) => res.json())
     .then((res) => {
       if (!res?.familyStyles) {
-        throw new Error("⛔ Error getting family styles!")
+        throw new Error("- Error getting family styles!")
       }
-      logUpdate.persist(`✅ Found family styles`)
+      console.log(`+ Found family styles`)
       return res
     })
     .catch(() => {
-      logUpdate.persist(`⛔ Error getting family styles!`)
+      console.log(`- Error getting family styles!`)
       return null
     })
 

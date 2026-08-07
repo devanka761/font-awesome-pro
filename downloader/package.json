@@ -1,6 +1,6 @@
 {
   "name": "fapro-downloader",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Font Awesome Pro+ Downloader",
   "author": "Devanka761 <contact@devanka.id> (https://devanka.id/)",
   "license": "MIT",
@@ -31,8 +31,8 @@
     "lint": "eslint --ext ts --ext tsx --ext js",
     "format": "prettier --write .",
     "check": "prettier --check .",
-    "create": "tsx ./src/create/start.ts",
-    "build": "npm run lint && npm run type-check && npm run format  && tsc --emitDeclarationOnly && tsx ./src/build.ts",
+    "create": "node ./dist/create/start.js",
+    "build": "npm run lint && npm run type-check && npm run format && tsc -p . && node ./dist/build.js",
     "version:patch": "npm --no-git-tag-version version patch",
     "version:minor": "npm --no-git-tag-version version minor",
     "version:major": "npm --no-git-tag-version version major",
@@ -40,12 +40,11 @@
     "pre:minor": "npm --no-git-tag-version version preminor && npm --no-git-tag-version version prerelease --preid wip",
     "pre:major": "npm --no-git-tag-version version premajor && npm --no-git-tag-version version prerelease --preid wip",
     "pre:release": "npm --no-git-tag-version version prerelease",
-    "svg-singles": "tsx ./src/create/uploadSingles.ts",
-    "svg-full-singles": "tsx ./src/create/uploadFullSingles.ts",
-    "svg-sprites": "tsx ./src/create/uploadSprites.ts"
+    "svg-singles": "node ./dist/create/uploadSingles.js",
+    "svg-full-singles": "node ./dist/create/uploadFullSingles.js",
+    "svg-sprites": "node ./dist/create/uploadSprites.js"
   },
   "dependencies": {
-    "log-update": "^8.0.0",
     "nodejs-file-downloader": "^4.13.0",
     "postcss": "^8.5.16",
     "postcss-safe-parser": "^7.0.1"

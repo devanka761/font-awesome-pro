@@ -8,6 +8,16 @@ on:
         type: string
         required: false
         default: ""
+      new_assets_only:
+        description: Overwrite Previous Released Assets
+        type: boolean
+        required: false
+        default: false
+      custom_previous:
+        description: "Custom Previous Release"
+        type: string
+        required: false
+        default: "0.0.0"
 
 permissions:
   id-token: write
@@ -19,6 +29,8 @@ jobs:
     outputs:
       use_version: ${{ steps.check.outputs.use_version }}
       release_version: ${{ steps.check.outputs.release_version }}
+      release_exists: ${{steps.check_asset.outputs.release_exists}}
+      asset_exists: ${{steps.check_asset.outputs.asset_exists}}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -49,6 +61,87 @@ jobs:
             echo "release_version=$DEFAULT_RELEASE" >> $GITHUB_OUTPUT
           fi
 
+      - name: Check latest release asset
+        id: check_asset
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          CUSTOM_TAG="${{ inputs.custom_previous }}"
+          CLEAN_TAG=${CUSTOM_TAG#v}
+
+          ASSET_NAME=SVG-singles-only-v$CLEAN_TAG.zip
+
+          if gh release view "v$CLEAN_TAG" > /dev/null 2>&1; then
+            echo "Release found."
+
+            echo "release_exists=true" >> "$GITHUB_OUTPUT"
+
+            # Check whether the asset exists
+            if gh release view "v$CLEAN_TAG" \
+              --json assets \
+              --jq '.assets[].name' |
+              grep -Fxq "$ASSET_NAME"; then
+
+              echo "Asset found: $ASSET_NAME"
+              echo "asset_exists=true" >> "$GITHUB_OUTPUT"
+
+            else
+              echo "Asset not found: $ASSET_NAME"
+              echo "asset_exists=false" >> "$GITHUB_OUTPUT"
+            fi
+
+          else
+            echo "Release not found: v$CLEAN_TAG"
+
+            echo "release_exists=false" >> "$GITHUB_OUTPUT"
+            echo "asset_exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Prepare dist
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          CUSTOM_TAG="${{ inputs.custom_previous }}"
+          CLEAN_TAG=${CUSTOM_TAG#v}
+
+          ASSET_NAME=SVG-singles-only-v$CLEAN_TAG.zip
+
+          set -e
+
+          rm -rf dist
+          mkdir -p dist
+
+          if [ "${{ steps.check_asset.outputs.asset_exists }}" = "true" ]; then
+            echo "Asset exists."
+            echo "Downloading $ASSET_NAME..."
+
+            mkdir -p /tmp/release-assets
+
+            gh release download "v$CLEAN_TAG" \
+              --pattern "$ASSET_NAME" \
+              --dir /tmp/release-assets
+
+            echo "Extracting asset..."
+
+            unzip -q \
+              "/tmp/release-assets/$ASSET_NAME" \
+              -d dist
+
+            echo "dist prepared from release asset."
+
+          else
+            echo "Asset does not exist."
+            echo "Keeping dist empty."
+          fi
+
+      - name: Upload dist
+        uses: actions/upload-artifact@v4
+        with:
+          name: prepared-dist
+          path: dist/
+          include-hidden-files: true
+          if-no-files-found: warn
+
   create_singles:
     needs: setup
     runs-on: ubuntu-latest
@@ -59,6 +152,12 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Download prepared dist
+        uses: actions/download-artifact@v4
+        with:
+          name: prepared-dist
+          path: dist/
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -68,9 +167,24 @@ jobs:
         working-directory: ./downloader
         run: npm ci
 
-      - name: Build
+      - name: Build Project
         working-directory: ./downloader
-        run: npm run svg-singles
+        run: npm run build
+
+      - name: Create SVG Sprites
+        working-directory: ./downloader
+        run: |
+
+          if [ "${{ inputs.new_assets_only }}" = "true" ]; then
+            echo "Using overwriting assets..."
+
+            npm run svg-singles -- --newOnly=true
+
+          else
+            echo "Using force new assets.."
+
+            npm run svg-singles
+          fi
 
       - name: Create ZIP for files
         run: |
@@ -88,6 +202,5 @@ jobs:
           else
             echo "Release $TAG_NAME does not exists. Creating new release..."
             gh release create "$TAG_NAME" "$ZIP_NAME" \
-              --title "Release $TAG_NAME" \
-              --generate-notes
+              --title "Font Awesome Pro+ $TAG_NAME"
           fi
