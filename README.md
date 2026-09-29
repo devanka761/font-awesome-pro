@@ -27,6 +27,8 @@ It is possible that someone may create their own version, fork, rewrite, or othe
 
 This repository received a takedown request from [alexpoiry](https://github.com/alexpoiry) of [FontAwesome](https://github.com/FortAwesome), expressing regret over the presence of their premium content within this project.
 
+[**/issues/26**](https://github.com/devanka761/font-awesome-pro/issues/26)
+
 Rather than continuing to maintain or distribute the repository and potentially creating further issues with [FontAwesome](https://github.com/FortAwesome), I have decided to voluntarily take down the repository and its associated materials in their entirety.
 
 This decision also means that even isolated pieces of code or other materials that could potentially be used to reconstruct, revive, or provide future updates to free Font Awesome Pro+ will not be retained here.
